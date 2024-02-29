@@ -1,0 +1,32 @@
+#!/bin/bash
+#PBS -l walltime=60:00:00,select=1:ncpus=8:mem=64gb:ngpus=1:gpu_mem=32gb
+#PBS -N mm-trans
+#PBS -A st-fhendija-1-gpu
+#PBS -o outputTestMem.txt
+#PBS -e errorTestMem.txt
+
+########################################################################
+
+cd $PBS_O_WORKDIR
+
+# pretrained_model=/scratch/st-fhendija-1/iman/pre-trained/models/microsoft/graphcodebert
+# data_dir=/scratch/st-fhendija-1/iman/experiments/CodeBERT1/CodeBERT/GraphCodeBERT/code2nl/data/code2nl/CodeSearchNet
+pretrained_model=/scratch/st-fhendija-1/amirreza/models/CodeBERT
+lang=python #programming language
+lr=5e-5
+batch_size=64
+beam_size=10
+source_length=256
+target_length=128
+data_dir=/scratch/st-fhendija-1/amirreza/datasets/CodeSearchNet/CodeSearchNet
+output_dir=model/$lang
+train_file=$data_dir/$lang/train.jsonl
+dev_file=$data_dir/$lang/valid.jsonl
+test_file=$data_dir/$lang/test.jsonl
+eval_steps=500 #400 for ruby, 600 for javascript, 1000 for others
+train_steps=10000 #20000 for ruby, 30000 for javascript, 50000 for others
+#--do_train --do_eval
+
+python task_run.py --do_train --do_eval --do_test --model_type roberta --model_name_or_path $pretrained_model --lang $lang --tokenizer_name $pretrained_model --config_name $pretrained_model --train_filename $train_file --test_filename $test_file  --dev_filename $dev_file --output_dir $output_dir --max_source_length $source_length --max_target_length $target_length --beam_size $beam_size --train_batch_size $batch_size --eval_batch_size $batch_size --learning_rate $lr --train_steps $train_steps --eval_steps $eval_steps 2>&1| tee $output_dir/task_train.log
+
+
