@@ -4,7 +4,7 @@ parent_dir=$1
 
 host="narval"
 root_dir="/home/amirresm/projects/def-fard/amirresm/outputs/t5_experiments"
-list_of_targets="all_results.json job_report.log"
+list_of_targets="all_results.json job_report.log trainer_state.json"
 
 default_parents="t5_base_compacter_python_no_hint t5_base_full_python_no_hint t5_large_compacter_python_no_hint t5_base_compacter_python t5_base_compacter_python_no_hint_b16 t5_large_compacter_js t5_small_compacter_python"
 

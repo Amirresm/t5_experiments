@@ -1,0 +1,6 @@
+size		peft		batch		mem (GB)
+base		y			32			37.2
+base		y			16			19.5
+base		n			16			25.9
+base		n			8			14.6
+large		y			8			26.2
