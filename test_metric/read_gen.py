@@ -23,8 +23,8 @@ def parse_generation(idx, gen_text, index):
     match = grouped.search(gen_text)
     if match is not None and idx == index + 1:
         # info["input"] = match.group(1).strip()
-        info["target"] = match.group(2).strip()
-        # info["reconstructed_target"] = match.group(3).strip()
+        # info["target"] = match.group(2).strip()
+        info["target"] = match.group(3).strip()
         info["pred"] = match.group(4).strip()
         # info["raw_input"] = match.group(5).strip()
         # info["raw_target"] = match.group(6).strip()
@@ -104,7 +104,8 @@ custom_generetions = [
 ]
 
 if __name__ == "__main__":
-    path = os.path.join(os.path.dirname(__file__), "gen_example.txt")
+    # path = os.path.join(os.path.dirname(__file__), "gen_example.txt")
+    path = os.path.join(os.path.dirname(__file__), "gen_example_comp.txt")
 
     generations = read_generations(path, limit=None)
     # generations = custom_generetions
@@ -112,7 +113,7 @@ if __name__ == "__main__":
     bleu1 = Bleu()
     bleu1_args = prepare_for_bleu1(generations)
     bleu1_outputs = bleu1._compute(
-        bleu1_args[0], bleu1_args[1], tokenizer=normalize, smooth=True
+        bleu1_args[0], bleu1_args[1], smooth=True
     )
     bleu1_outputs["bleuP"] = bleu1_outputs["bleu"] * 100
 
@@ -120,8 +121,8 @@ if __name__ == "__main__":
     (goldMap, predictionMap) = computeMaps2(bleu2_args[0], bleu2_args[1])
     bleu2_outputs = round(bleuFromMaps(goldMap, predictionMap)[0], 2)
 
-    print(f"\nBleu1: {bleu1_outputs['bleuP']:.2f}")
+    print(f"\nBleu1: {bleu1_outputs['bleuP']:.4f}")
     print(bleu1_outputs)
 
-    print(f"\nBleu2: {bleu2_outputs:.2f}")
+    print(f"\nBleu2: {bleu2_outputs:.4f}")
     print(bleu2_outputs)
