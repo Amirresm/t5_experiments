@@ -109,7 +109,8 @@ custom_generetions = [
 
 if __name__ == "__main__":
     # path = os.path.join(os.path.dirname(__file__), "gen_example.txt")
-    path = os.path.join(os.path.dirname(__file__), "gen_example_comp.txt")
+    # path = os.path.join(os.path.dirname(__file__), "gen_example_comp.txt")
+    path = os.path.join(os.path.dirname(__file__), "gen_example_lora.txt")
 
     generations = read_generations(path, limit=None)
     # generations = custom_generetions
