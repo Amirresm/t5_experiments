@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """
-This script was adapted from the original version by hieuhoang1972 which is part of MOSES. 
+This script was adapted from the original version by hieuhoang1972 which is part of MOSES.
 """
 
 # $Id: bleu.py 1307 2007-03-14 22:22:36Z hieuhoang1972 $
@@ -16,10 +16,10 @@ score_set(s, testid, refids, n=4): Interface with dataset.py; calculate BLEU sco
 
 The reason for breaking the BLEU computation into three phases cook_refs(), cook_test(), and score_cooked() is to allow the caller to calculate BLEU scores for multiple test sets as efficiently as possible.
 """
-
 import sys, math, re, xml.sax.saxutils
 import subprocess
 import os
+
 
 # Added to bypass NIST-style pre-processing of hyp and ref files -- wade
 nonorm = 0
@@ -33,7 +33,9 @@ normalize1 = [
     (r"\n", " "),  # join lines
     #    (r'(\d)\s+(?=\d)', r'\1'), # join digits
 ]
-normalize1 = [(re.compile(pattern), replace) for (pattern, replace) in normalize1]
+normalize1 = [
+    (re.compile(pattern), replace) for (pattern, replace) in normalize1
+]
 
 normalize2 = [
     (
@@ -50,7 +52,9 @@ normalize2 = [
     ),  # tokenize period and comma unless followed by a digit
     (r"([0-9])(-)", r"\1 \2 "),  # tokenize dash when preceded by a digit
 ]
-normalize2 = [(re.compile(pattern), replace) for (pattern, replace) in normalize2]
+normalize2 = [
+    (re.compile(pattern), replace) for (pattern, replace) in normalize2
+]
 
 
 def normalize(s):
@@ -71,7 +75,6 @@ def normalize(s):
     for pattern, replace in normalize2:
         s = re.sub(pattern, replace, s)
     return s.split()
-
 
 def count_ngrams(words, n=4):
     counts = {}
@@ -122,13 +125,20 @@ def cook_test(test, item, n=4):
     result["correct"] = [0] * n
     counts = count_ngrams(test, n)
     for ngram, count in counts.items():
-        result["correct"][len(ngram) - 1] += min(refmaxcounts.get(ngram, 0), count)
+        result["correct"][len(ngram) - 1] += min(
+            refmaxcounts.get(ngram, 0), count
+        )
 
     return result
 
 
 def score_cooked(allcomps, n=4, ground=0, smooth=1):
-    totalcomps = {"testlen": 0, "reflen": 0, "guess": [0] * n, "correct": [0] * n}
+    totalcomps = {
+        "testlen": 0,
+        "reflen": 0,
+        "guess": [0] * n,
+        "correct": [0] * n,
+    }
     for comps in allcomps:
         for key in ["testlen", "reflen"]:
             totalcomps[key] += comps[key]
@@ -143,13 +153,15 @@ def score_cooked(allcomps, n=4, ground=0, smooth=1):
         addsmooth = 0
         if smooth == 1 and k > 0:
             addsmooth = 1
-        logbleu += math.log(correct + addsmooth + sys.float_info.min) - math.log(
-            guess + addsmooth + sys.float_info.min
-        )
+        logbleu += math.log(
+            correct + addsmooth + sys.float_info.min
+        ) - math.log(guess + addsmooth + sys.float_info.min)
         if guess == 0:
             all_bleus.append(-10000000)
         else:
-            all_bleus.append(math.log(correct + sys.float_info.min) - math.log(guess))
+            all_bleus.append(
+                math.log(correct + sys.float_info.min) - math.log(guess)
+            )
 
     logbleu /= float(n)
     all_bleus.insert(0, logbleu)
@@ -198,7 +210,11 @@ def computeMaps(predictions, goldfile):
     return (goldMap, predictionMap)
 
 
-def computeMaps2(predictions, refsMaps):
+def computeMaps2(predictions, refsMaps, tokenizer=None):
+    global normalize
+    if tokenizer is not None:
+        normalize = tokenizer
+
     predictionMap = {}
     goldMap = {}
 
@@ -217,16 +233,16 @@ def computeMaps2(predictions, refsMaps):
 
 # m1 is the reference map
 # m2 is the prediction map
-def bleuFromMaps(m1, m2):
+def bleuFromMaps(m1, m2, smooth=False):
     score = [0] * 5
     num = 0.0
 
     for key in m1:
         if key in m2:
-            bl = bleu(m1[key], m2[key][0])
+            bl = bleu(m1[key], m2[key][0], smooth=smooth)
             score = [score[i] + bl[i] for i in range(0, len(bl))]
             num += 1
-    return [s * 100.0 / num for s in score]
+    return [s / num for s in score]
 
 
 if __name__ == "__main__":
