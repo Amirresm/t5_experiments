@@ -47,14 +47,18 @@ def read_generations(path, limit=None):
 
     with open(path, "r") as f:
         for idx, line in enumerate(
-            tqdm.tqdm(f, desc="Reading generations", total=os.path.getsize(path))
+            tqdm.tqdm(
+                f, desc="Reading generations", total=os.path.getsize(path)
+            )
         ):
             if gen_end_re.match(line):
                 if not skipped_first:
                     current_idx = int(gen_end_re.match(line).group(1))
                     skipped_first = True
                     continue
-                gen = parse_generation(current_idx, current_gen_text, read_generations)
+                gen = parse_generation(
+                    current_idx, current_gen_text, read_generations
+                )
                 if gen is False:
                     break
                 generations.append(gen)
@@ -112,17 +116,16 @@ if __name__ == "__main__":
 
     bleu1 = Bleu()
     bleu1_args = prepare_for_bleu1(generations)
-    bleu1_outputs = bleu1._compute(
-        bleu1_args[0], bleu1_args[1], smooth=True
-    )
+    bleu1_outputs = bleu1._compute(bleu1_args[0], bleu1_args[1], smooth=True)
     bleu1_outputs["bleuP"] = bleu1_outputs["bleu"] * 100
 
     bleu2_args = prepare_for_bleu2(generations)
     (goldMap, predictionMap) = computeMaps2(bleu2_args[0], bleu2_args[1])
-    bleu2_outputs = round(bleuFromMaps(goldMap, predictionMap)[0], 2)
+    bleu2_outputs = bleuFromMaps(goldMap, predictionMap)
+    bleu2_output = round(bleu2_outputs[0], 2)
 
     print(f"\nBleu1: {bleu1_outputs['bleuP']:.4f}")
     print(bleu1_outputs)
 
-    print(f"\nBleu2: {bleu2_outputs:.4f}")
+    print(f"\nBleu2: {bleu2_output:.4f}")
     print(bleu2_outputs)
