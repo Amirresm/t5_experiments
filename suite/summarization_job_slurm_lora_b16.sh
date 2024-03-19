@@ -93,7 +93,7 @@ python3 $script_path \
     --summary_column $summary_column \
     --source_prefix $source_prefix \
     --output_dir $output_dir \
-    --overwrite_output_dir \
+    --overwrite_output_dir 0 \
     --use_fast_tokenizer $use_fast_tokenizer \
     --train_tokenizer $train_tokenizer \
     --per_device_train_batch_size $per_device_train_batch_size \
