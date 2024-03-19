@@ -3,6 +3,7 @@ import tqdm
 import re
 
 from bleu1.bleu import Bleu
+from bleu1.tokenizer_13a import Tokenizer13a
 
 from bleu2.bleu import bleuFromMaps, normalize, computeMaps2
 
@@ -101,8 +102,8 @@ custom_generetions = [
     {
         "idx": 0,
         "index": 0,
-        "target": "hello there general kenobi",
-        "pred": "hello there general",
+        "target": "The guard arrived late because it was raining",
+        "pred": "The guard arrived late because of the rain",
     },
     # {"idx": 1, "index": 1, "target": "foo bar foobar", "pred": "foo bar foobar"}
 ]
@@ -112,21 +113,34 @@ if __name__ == "__main__":
     # path = os.path.join(os.path.dirname(__file__), "gen_example_comp.txt")
     path = os.path.join(os.path.dirname(__file__), "gen_example_lora.txt")
 
-    generations = read_generations(path, limit=None)
+    tokenizer1 = Tokenizer13a()
+    tokenizer2 = normalize
+
+    generations = read_generations(path, limit=20)
     # generations = custom_generetions
+
+    # generations = generations[12:16]
+
+    smoothed = False
+
+    tokenizer = tokenizer2
 
     bleu1 = Bleu()
     bleu1_args = prepare_for_bleu1(generations)
-    bleu1_outputs = bleu1._compute(bleu1_args[0], bleu1_args[1], smooth=True)
+    bleu1_outputs = bleu1._compute(
+        bleu1_args[0], bleu1_args[1], tokenizer=tokenizer, smooth=smoothed
+    )
     bleu1_outputs["bleuP"] = bleu1_outputs["bleu"] * 100
 
     bleu2_args = prepare_for_bleu2(generations)
-    (goldMap, predictionMap) = computeMaps2(bleu2_args[0], bleu2_args[1])
-    bleu2_outputs = bleuFromMaps(goldMap, predictionMap)
-    bleu2_output = round(bleu2_outputs[0], 2)
+    (goldMap, predictionMap) = computeMaps2(
+        bleu2_args[0], bleu2_args[1], tokenizer=tokenizer
+    )
+    bleu2_outputs = bleuFromMaps(goldMap, predictionMap, smooth=smoothed)
+    bleu2_output = bleu2_outputs[0] * 100
 
     print(f"\nBleu1: {bleu1_outputs['bleuP']:.4f}")
     print(bleu1_outputs)
 
     print(f"\nBleu2: {bleu2_output:.4f}")
-    print(bleu2_outputs)
+    print(bleu2_outputs[1:])
