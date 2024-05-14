@@ -25,6 +25,7 @@ import sys
 import pathlib
 from dataclasses import dataclass, field
 from typing import Optional
+import json
 
 import datasets
 import nltk  # Here to have a nice missing dependency error message early on
@@ -59,6 +60,8 @@ from transformers import (
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version, is_offline_mode
 from transformers.utils.versions import require_version
+
+from bleu2.calc_bleu2 import calculate_bleu2
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -209,6 +212,14 @@ class DataTrainingArguments:
         metadata={
             "help": "The name of the column in the datasets containing the summaries (for summarization)."
         },
+    )
+    text_tokenized: bool = field(
+            default=False,
+            metadata={"help": "Whether the text is already tokenized."},
+    )
+    summary_tokenized: bool = field(
+            default=False,
+            metadata={"help": "Whether the summary is already tokenized."},
     )
     train_file: Optional[str] = field(
         default=None,
@@ -585,8 +596,9 @@ def main():
     )
 
     # Convert the model into an adapter model
-    adapters.init(model)
-    adapter_name = f"{model_args.config_title}_adapter"
+    if adapter_args.train_adapter:
+        adapters.init(model)
+        adapter_name = f"{model_args.config_title}_adapter"
 
     # We resize the embeddings only when necessary to avoid index errors. If you are creating a model from scratch
     # on a small vocab and want a smaller embedding size, remove this test.
@@ -707,13 +719,22 @@ def main():
         inputs, targets = [], []
         for i in range(len(examples[text_column])):
             if examples[text_column][i] and examples[summary_column][i]:
-                inputs.append(
-                    examples[text_column][i].replace(
-                        f"{examples[summary_column][i]}", ""
-                    )
-                )
-                targets.append(examples[summary_column][i])
+                input = examples[text_column][i]
+                target = examples[summary_column][i]
+                if data_args.text_tokenized:
+                    input = " ".join(input)
+                if data_args.summary_tokenized:
+                    target = " ".join(target)
+                # inputs.append(
+                #     input.replace(
+                #         f"{target}", ""
+                #     )
+                # )
+                inputs.append(input)
+                targets.append(target)
         inputs = [prefix + inp for inp in inputs]
+        # logger.info(f"inputs: {inputs[:5]}")
+        # logger.info(f"targets: {targets[:5]}")
         model_inputs = tokenizer(
             inputs,
             max_length=data_args.max_source_length,
@@ -851,9 +872,14 @@ def main():
         ]
         result["gen_len"] = np.mean(prediction_lens)
 
+        # CodeBERT bleu metric
+        bleu2, b2args = calculate_bleu2(decoded_preds, decoded_labels, smooth=True)
+        bleu2 = {f"BLEU2_{k}": str(v) if isinstance(v, list) else v
+                 for k, v in bleu2.items()}
+        result = {**result, **bleu2}
         if data_args.metric_path is not None:
-            if  True or (any([len(decoded_pred) > 0 for decoded_pred in decoded_preds]) and any(
-                [len(decoded_label) > 0 for decoded_label in decoded_labels])
+            if any([len(decoded_pred) > 0 for decoded_pred in decoded_preds]) and any(
+                [len(decoded_label) > 0 for decoded_label in decoded_labels]
             ):
                 result_bleu = metric_bleu.compute(
                     predictions=decoded_preds, references=decoded_labels, smooth=True
@@ -886,8 +912,10 @@ def main():
         training_args.load_best_model_at_end = True
 
     # Setup adapters
-    adapter_args.adapter_config = AdapterConfig.load(adapter_args.adapter_config)
-    setup_adapter_training(model, adapter_args, adapter_name)
+    if adapter_args.train_adapter:
+        adapter_args.adapter_config = AdapterConfig.load(adapter_args.adapter_config)
+        setup_adapter_training(model, adapter_args, adapter_name)
+
     if (
         model_args.preload_adapter
         and adapter_args.train_adapter
@@ -899,7 +927,9 @@ def main():
             load_as=adapter_name,
             set_active=True,
         )
-    logger.info(f"Adapter Summary:\n{model.adapter_summary()}")
+
+    if adapter_args.train_adapter:
+        logger.info(f"Adapter Summary:\n{model.adapter_summary()}")
 
     # Initialize our Trainer
     trainer_class = (
