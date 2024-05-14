@@ -25,6 +25,7 @@ import sys
 import pathlib
 from dataclasses import dataclass, field
 from typing import Optional
+import json
 
 import datasets
 import nltk  # Here to have a nice missing dependency error message early on
@@ -52,6 +53,9 @@ from transformers import (
     MBart50TokenizerFast,
     MBartTokenizer,
     MBartTokenizerFast,
+    RobertaConfig,
+    RobertaModel,
+    RobertaTokenizer,
     Seq2SeqTrainer,
     Seq2SeqTrainingArguments,
     set_seed,
@@ -59,6 +63,10 @@ from transformers import (
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version, is_offline_mode
 from transformers.utils.versions import require_version
+
+from bleu2.calc_bleu2 import calculate_bleu2
+from codebert_model import Seq2Seq
+import torch.nn as nn
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -190,7 +198,9 @@ class DataTrainingArguments:
 
     dataset_name: Optional[str] = field(
         default=None,
-        metadata={"help": "The name of the dataset to use (via the datasets library)."},
+        metadata={
+            "help": "The name of the dataset to use (via the datasets library)."
+        },
     )
     dataset_config_name: Optional[str] = field(
         default=None,
@@ -210,9 +220,19 @@ class DataTrainingArguments:
             "help": "The name of the column in the datasets containing the summaries (for summarization)."
         },
     )
+    text_tokenized: bool = field(
+        default=False,
+        metadata={"help": "Whether the text is already tokenized."},
+    )
+    summary_tokenized: bool = field(
+        default=False,
+        metadata={"help": "Whether the summary is already tokenized."},
+    )
     train_file: Optional[str] = field(
         default=None,
-        metadata={"help": "The input training data file (a jsonlines or csv file)."},
+        metadata={
+            "help": "The input training data file (a jsonlines or csv file)."
+        },
     )
     validation_file: Optional[str] = field(
         default=None,
@@ -234,7 +254,9 @@ class DataTrainingArguments:
     )
     preprocessing_num_workers: Optional[int] = field(
         default=None,
-        metadata={"help": "The number of processes to use for the preprocessing."},
+        metadata={
+            "help": "The number of processes to use for the preprocessing."
+        },
     )
     max_source_length: Optional[int] = field(
         default=1024,
@@ -423,8 +445,8 @@ def main():
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
         # If we pass only one argument to the script and it's the path to a json file,
         # let's parse it to get our arguments.
-        model_args, data_args, training_args, adapter_args = parser.parse_json_file(
-            json_file=os.path.abspath(sys.argv[1])
+        model_args, data_args, training_args, adapter_args = (
+            parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
         )
     else:
         model_args, data_args, training_args, adapter_args = (
@@ -474,13 +496,17 @@ def main():
         and not training_args.overwrite_output_dir
     ):
         last_checkpoint = get_last_checkpoint(training_args.output_dir)
-        if last_checkpoint is None and len(os.listdir(training_args.output_dir)) > 0:
+        if (
+            last_checkpoint is None
+            and len(os.listdir(training_args.output_dir)) > 0
+        ):
             raise ValueError(
                 f"Output directory ({training_args.output_dir}) already exists and is not empty. "
                 "Use --overwrite_output_dir to overcome."
             )
         elif (
-            last_checkpoint is not None and training_args.resume_from_checkpoint is None
+            last_checkpoint is not None
+            and training_args.resume_from_checkpoint is None
         ):
             logger.info(
                 f"Checkpoint detected, resuming training at {last_checkpoint}. To avoid this behavior, change "
@@ -537,62 +563,102 @@ def main():
     # Distributed training:
     # The .from_pretrained methods guarantee that only one local process can concurrently
     # download model & vocab.
-    config = AutoConfig.from_pretrained(
-        (
-            model_args.config_name
-            if model_args.config_name
-            else model_args.model_name_or_path
-        ),
-        cache_dir=model_args.cache_dir,
-        revision=model_args.model_revision,
-        use_auth_token=True if model_args.use_auth_token else None,
-    )
-    tokenizer = AutoTokenizer.from_pretrained(
-        (
-            model_args.tokenizer_name_or_path
-            if model_args.tokenizer_name_or_path
-            and os.path.isdir(model_args.tokenizer_name_or_path)
-            else model_args.model_name_or_path
-        ),
-        cache_dir=model_args.cache_dir,
-        use_fast=model_args.use_fast_tokenizer,
-        revision=model_args.model_revision,
-        use_auth_token=True if model_args.use_auth_token else None,
-    )
-    if (
-        model_args.train_tokenizer
-        and model_args.use_fast_tokenizer
-        and hasattr(tokenizer, "train_new_from_iterator")
-        and callable(tokenizer.train_new_from_iterator)
-    ):
-        logger.info("Training tokenizer...")
-        training_corpus = get_training_corpus(
-            raw_datasets["train"],
-            [data_args.text_column, data_args.summary_column],
-            1000,
-        )
-        tokenizer = tokenizer.train_new_from_iterator(training_corpus)
-    tokenizer.save_pretrained(model_args.tokenizer_name_or_path)
-    logger.info(f"Tokenizer saved to {model_args.tokenizer_name_or_path}")
+    is_codebert = "codebert" in model_args.model_name_or_path
+    if is_codebert:
+        model_class = RobertaModel
+        tokenizer_class = RobertaTokenizer
+        config_class = RobertaConfig
 
-    model = AutoModelForSeq2SeqLM.from_pretrained(
-        model_args.model_name_or_path,
-        from_tf=bool(".ckpt" in model_args.model_name_or_path),
-        config=config,
-        cache_dir=model_args.cache_dir,
-        revision=model_args.model_revision,
-        use_auth_token=True if model_args.use_auth_token else None,
-    )
+        config = config_class.from_pretrained(
+            "microsoft/codebert-base",
+            cache_dir=model_args.cache_dir,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
+        tokenizer = tokenizer_class.from_pretrained(
+            "microsoft/codebert-base",
+            cache_dir=model_args.cache_dir,
+            use_fast=model_args.use_fast_tokenizer,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
+        encoder = model_class.from_pretrained(
+            model_args.model_name_or_path, config=config
+        )
+        decoder_layer = nn.TransformerDecoderLayer(
+            # d_model=config.hidden_size, nhead=config.num_attention_heads
+            d_model=768,
+            nhead=12,
+        )
+        decoder = nn.TransformerDecoder(decoder_layer, num_layers=6)
+        model = Seq2Seq(
+            encoder=encoder,
+            decoder=decoder,
+            config=config,
+            beam_size=10,
+            max_length=data_args.max_target_length,
+            sos_id=tokenizer.cls_token_id,
+            eos_id=tokenizer.sep_token_id,
+        )
+    else:
+        config = AutoConfig.from_pretrained(
+            (
+                model_args.config_name
+                if model_args.config_name
+                else model_args.model_name_or_path
+            ),
+            cache_dir=model_args.cache_dir,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
+        tokenizer = AutoTokenizer.from_pretrained(
+            (
+                model_args.tokenizer_name_or_path
+                if model_args.tokenizer_name_or_path
+                and os.path.isdir(model_args.tokenizer_name_or_path)
+                else model_args.model_name_or_path
+            ),
+            cache_dir=model_args.cache_dir,
+            use_fast=model_args.use_fast_tokenizer,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
+        if (
+            model_args.train_tokenizer
+            and model_args.use_fast_tokenizer
+            and hasattr(tokenizer, "train_new_from_iterator")
+            and callable(tokenizer.train_new_from_iterator)
+        ):
+            logger.info("Training tokenizer...")
+            training_corpus = get_training_corpus(
+                raw_datasets["train"],
+                [data_args.text_column, data_args.summary_column],
+                1000,
+            )
+            tokenizer = tokenizer.train_new_from_iterator(training_corpus)
+        tokenizer.save_pretrained(model_args.tokenizer_name_or_path)
+        logger.info(f"Tokenizer saved to {model_args.tokenizer_name_or_path}")
+
+        model = AutoModelForSeq2SeqLM.from_pretrained(
+            model_args.model_name_or_path,
+            from_tf=bool(".ckpt" in model_args.model_name_or_path),
+            config=config,
+            cache_dir=model_args.cache_dir,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
 
     # Convert the model into an adapter model
-    adapters.init(model)
-    adapter_name = f"{model_args.config_title}_adapter"
+    if adapter_args.train_adapter:
+        adapters.init(model)
+        adapter_name = f"{model_args.config_title}_adapter"
 
     # We resize the embeddings only when necessary to avoid index errors. If you are creating a model from scratch
     # on a small vocab and want a smaller embedding size, remove this test.
-    embedding_size = model.get_input_embeddings().weight.shape[0]
-    if len(tokenizer) > embedding_size:
-        model.resize_token_embeddings(len(tokenizer))
+    if not is_codebert:
+        embedding_size = model.get_input_embeddings().weight.shape[0]
+        if len(tokenizer) > embedding_size:
+            model.resize_token_embeddings(len(tokenizer))
 
     if model.config.decoder_start_token_id is None and isinstance(
         tokenizer, (MBartTokenizer, MBartTokenizerFast)
@@ -602,8 +668,8 @@ def main():
                 data_args.lang
             ]
         else:
-            model.config.decoder_start_token_id = tokenizer.convert_tokens_to_ids(
-                data_args.lang
+            model.config.decoder_start_token_id = (
+                tokenizer.convert_tokens_to_ids(data_args.lang)
             )
 
     if model.config.decoder_start_token_id is None:
@@ -631,7 +697,9 @@ def main():
                 " model's position encodings by passing `--resize_position_embeddings`."
             )
 
-    prefix = data_args.source_prefix if data_args.source_prefix is not None else ""
+    prefix = (
+        data_args.source_prefix if data_args.source_prefix is not None else ""
+    )
 
     # Preprocessing the datasets.
     # We need to tokenize inputs and targets.
@@ -665,10 +733,14 @@ def main():
         model.config.forced_bos_token_id = forced_bos_token_id
 
     # Get the column names for input/target.
-    dataset_columns = summarization_name_mapping.get(data_args.dataset_name, None)
+    dataset_columns = summarization_name_mapping.get(
+        data_args.dataset_name, None
+    )
     if data_args.text_column is None:
         text_column = (
-            dataset_columns[0] if dataset_columns is not None else column_names[0]
+            dataset_columns[0]
+            if dataset_columns is not None
+            else column_names[0]
         )
     else:
         text_column = data_args.text_column
@@ -678,7 +750,9 @@ def main():
             )
     if data_args.summary_column is None:
         summary_column = (
-            dataset_columns[1] if dataset_columns is not None else column_names[1]
+            dataset_columns[1]
+            if dataset_columns is not None
+            else column_names[1]
         )
     else:
         summary_column = data_args.summary_column
@@ -707,13 +781,22 @@ def main():
         inputs, targets = [], []
         for i in range(len(examples[text_column])):
             if examples[text_column][i] and examples[summary_column][i]:
-                inputs.append(
-                    examples[text_column][i].replace(
-                        f"{examples[summary_column][i]}", ""
-                    )
-                )
-                targets.append(examples[summary_column][i])
+                input = examples[text_column][i]
+                target = examples[summary_column][i]
+                if data_args.text_tokenized:
+                    input = " ".join(input)
+                if data_args.summary_tokenized:
+                    target = " ".join(target)
+                # inputs.append(
+                #     input.replace(
+                #         f"{target}", ""
+                #     )
+                # )
+                inputs.append(input)
+                targets.append(target)
         inputs = [prefix + inp for inp in inputs]
+        # logger.info(f"inputs: {inputs[:5]}")
+        # logger.info(f"targets: {targets[:5]}")
         model_inputs = tokenizer(
             inputs,
             max_length=data_args.max_source_length,
@@ -745,9 +828,13 @@ def main():
             raise ValueError("--do_train requires a train dataset")
         train_dataset = raw_datasets["train"]
         if data_args.max_train_samples is not None:
-            max_train_samples = min(len(train_dataset), data_args.max_train_samples)
+            max_train_samples = min(
+                len(train_dataset), data_args.max_train_samples
+            )
             train_dataset = train_dataset.select(range(max_train_samples))
-        with training_args.main_process_first(desc="train dataset map pre-processing"):
+        with training_args.main_process_first(
+            desc="train dataset map pre-processing"
+        ):
             train_dataset = train_dataset.map(
                 preprocess_function,
                 batched=True,
@@ -763,7 +850,9 @@ def main():
             raise ValueError("--do_eval requires a validation dataset")
         eval_dataset = raw_datasets["validation"]
         if data_args.max_eval_samples is not None:
-            max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
+            max_eval_samples = min(
+                len(eval_dataset), data_args.max_eval_samples
+            )
             eval_dataset = eval_dataset.select(range(max_eval_samples))
         with training_args.main_process_first(
             desc="validation dataset map pre-processing"
@@ -837,13 +926,19 @@ def main():
         if data_args.ignore_pad_token_for_loss:
             # Replace -100 in the labels as we can't decode them.
             labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
-        decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+        decoded_labels = tokenizer.batch_decode(
+            labels, skip_special_tokens=True
+        )
 
         # Some simple post-processing
-        decoded_preds, decoded_labels = postprocess_text(decoded_preds, decoded_labels)
+        decoded_preds, decoded_labels = postprocess_text(
+            decoded_preds, decoded_labels
+        )
 
         result = metric_rouge.compute(
-            predictions=decoded_preds, references=decoded_labels, use_stemmer=True
+            predictions=decoded_preds,
+            references=decoded_labels,
+            use_stemmer=True,
         )
         result = {f"ROUGE_{k}": round(v * 100, 4) for k, v in result.items()}
         prediction_lens = [
@@ -851,12 +946,28 @@ def main():
         ]
         result["gen_len"] = np.mean(prediction_lens)
 
+        # CodeBERT bleu metric
+        logger.info(f"decoded_preds: {decoded_preds[:5]}")
+        logger.info(f"decoded_labels: {decoded_labels[:5]}")
+        bleu2, b2args = calculate_bleu2(
+            decoded_preds, decoded_labels, smooth=True
+        )
+        logger.info(f"bleu2:\n{b2args}")
+        bleu2 = {
+            f"BLEU2_{k}": str(v) if isinstance(v, list) else v
+            for k, v in bleu2.items()
+        }
+        result = {**result, **bleu2}
         if data_args.metric_path is not None:
-            if  True or (any([len(decoded_pred) > 0 for decoded_pred in decoded_preds]) and any(
-                [len(decoded_label) > 0 for decoded_label in decoded_labels])
+            if any(
+                [len(decoded_pred) > 0 for decoded_pred in decoded_preds]
+            ) and any(
+                [len(decoded_label) > 0 for decoded_label in decoded_labels]
             ):
                 result_bleu = metric_bleu.compute(
-                    predictions=decoded_preds, references=decoded_labels, smooth=True
+                    predictions=decoded_preds,
+                    references=decoded_labels,
+                    smooth=True,
                 )
                 result_bleu["bleuP"] = round(result_bleu["bleu"] * 100, 4)
                 result_bleu = {
@@ -886,8 +997,12 @@ def main():
         training_args.load_best_model_at_end = True
 
     # Setup adapters
-    adapter_args.adapter_config = AdapterConfig.load(adapter_args.adapter_config)
-    setup_adapter_training(model, adapter_args, adapter_name)
+    if adapter_args.train_adapter:
+        adapter_args.adapter_config = AdapterConfig.load(
+            adapter_args.adapter_config
+        )
+        setup_adapter_training(model, adapter_args, adapter_name)
+
     if (
         model_args.preload_adapter
         and adapter_args.train_adapter
@@ -899,7 +1014,9 @@ def main():
             load_as=adapter_name,
             set_active=True,
         )
-    logger.info(f"Adapter Summary:\n{model.adapter_summary()}")
+
+    if adapter_args.train_adapter:
+        logger.info(f"Adapter Summary:\n{model.adapter_summary()}")
 
     # Initialize our Trainer
     trainer_class = (
@@ -917,7 +1034,9 @@ def main():
         ),
     )
     if data_args.patience and data_args.patience > 0:
-        callback = EarlyStoppingCallback(early_stopping_patience=data_args.patience)
+        callback = EarlyStoppingCallback(
+            early_stopping_patience=data_args.patience
+        )
         trainer.add_callback(callback)
 
     # Training
@@ -932,7 +1051,9 @@ def main():
         if adapter_args.train_adapter:
             ensure_path_exists(model_args.adapter_path)
             model.save_adapter(model_args.adapter_path, adapter_name)
-            logger.info(f"Adapter {adapter_name} saved to {model_args.adapter_path}")
+            logger.info(
+                f"Adapter {adapter_name} saved to {model_args.adapter_path}"
+            )
 
         metrics = train_result.metrics
         max_train_samples = (
@@ -988,7 +1109,9 @@ def main():
             if data_args.max_predict_samples is not None
             else len(predict_dataset)
         )
-        metrics["predict_samples"] = min(max_predict_samples, len(predict_dataset))
+        metrics["predict_samples"] = min(
+            max_predict_samples, len(predict_dataset)
+        )
 
         trainer.log_metrics("predict", metrics)
         trainer.save_metrics("predict", metrics)
@@ -1000,7 +1123,9 @@ def main():
                 )
                 labels = predict_results.label_ids
                 preds = predict_results.predictions
-                labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+                labels = np.where(
+                    labels != -100, labels, tokenizer.pad_token_id
+                )
                 preds = np.where(preds != -100, preds, tokenizer.pad_token_id)
 
                 raw_inputs = predict_dataset["input_ids"]
@@ -1072,7 +1197,10 @@ def main():
                     f"{len(pairs)} predictions saved to {output_prediction_file}"
                 )
 
-    kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "summarization"}
+    kwargs = {
+        "finetuned_from": model_args.model_name_or_path,
+        "tasks": "summarization",
+    }
     if data_args.dataset_name is not None:
         kwargs["dataset_tags"] = data_args.dataset_name
         if data_args.dataset_config_name is not None:
