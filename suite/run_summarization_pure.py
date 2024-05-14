@@ -317,6 +317,10 @@ class DataTrainingArguments:
         default=None,
         metadata={"help": ("Metric path")},
     )
+    metric_path_alt: Optional[str] = field(
+        default=None,
+        metadata={"help": ("Alternative metric path")},
+    )
     num_beams: Optional[int] = field(
         default=None,
         metadata={
@@ -832,9 +836,11 @@ def main():
     )
 
     # Metric
-    metric_rouge = evaluate.load("rouge")
+    # metric_rouge = evaluate.load("rouge")
     if data_args.metric_path is not None:
         metric_bleu = evaluate.load(path=data_args.metric_path)
+    if data_args.metric_path_alt is not None:
+        metric_rouge = evaluate.load(path=data_args.metric_path_alt)
 
     def postprocess_text(preds, labels):
         preds = [pred.strip() for pred in preds]

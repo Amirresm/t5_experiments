@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=12:00:00
+#SBATCH --time=40:00:00
 #SBATCH --mem-per-cpu=8G
 #SBATCH --gpus-per-node=1
 #SBATCH --output=JO-%x.%j.out
@@ -8,9 +8,9 @@
 
 # ./bash_utils/env_setup.sh
 module load StdEnv/2020  gcc/9.3.0  cuda/11.4 arrow/8.0.0 python/3.10
-virtualenv --no-download "$ENV_PATH"
+virtualenv --no-download $ENV_PATH
 #virtualenv $ENV_PATH
-source "$SLURM_TMPDIR/env/bin/activate"
+source $SLURM_TMPDIR/env/bin/activate
 pip install --no-index --upgrade pip
 #pip install --upgrade pip
 pip install --no-index numpy==1.23.5
@@ -22,9 +22,9 @@ pip install --no-deps /home/amirresm/files/research/summarization/adapters-0.1.2
 
 base_config_title=""
 lang="javascript"
-config_title="t5_base_compacter_${lang}_b16"
+config_title="t5_large_compacter_${lang}_b8"
 
-model="t5-base"
+model="t5-large"
 adapter_config="compacter"
 
 # Paths
@@ -34,7 +34,7 @@ bleu_path=$prog_root/bleu/bleu.py
 rouge_path=$prog_root/rouge/rouge.py
 
 storage_root=/home/amirresm/projects/def-fard/amirresm
-parent_path=/home/amirresm/projects/def-fard/amirresm/outputs/rr_experiments/$lang/$config_title
+parent_path=/home/amirresm/projects/def-fard/amirresm/outputs/rr_experiments/$config_title
 
 data=$storage_root/data/CodeSearchNet/$lang
 model_path=$storage_root/models/$model
@@ -67,8 +67,8 @@ learning_rate="5e-5"
 weight_decay="0.01"
 num_train_epochs="3.0"
 warmup_steps=500
-per_device_train_batch_size=16
-per_device_eval_batch_size=16
+per_device_train_batch_size=8
+per_device_eval_batch_size=8
 max_source_length=512
 max_target_length=256
 generation_max_length=$max_target_length
