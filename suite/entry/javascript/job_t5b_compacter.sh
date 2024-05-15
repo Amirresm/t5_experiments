@@ -88,7 +88,7 @@ test_file="${data}/test.jsonl"
 export HF_EVALUATE_OFFLINE=1
 export HF_DATASETS_OFFLINE=1
 
-${prog_root}/checkmem.sh 180 "${output_dir}/memuse.txt"
+${prog_root}/checkmem.sh 600 "${output_dir}/memuse.txt" &
 
 echo "Bash going to Python..."
 python3 $script_path \

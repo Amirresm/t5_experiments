@@ -21,7 +21,7 @@ pip install --no-deps /home/amirresm/files/research/summarization/adapters-0.1.2
 ./bash_utils/capability_check.sh
 
 base_config_title=""
-lang="javascript"
+lang="php"
 config_title="t5_large_compacter_${lang}_b8"
 
 model="t5-large"
