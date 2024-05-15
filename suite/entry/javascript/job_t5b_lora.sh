@@ -34,7 +34,7 @@ bleu_path=$prog_root/bleu/bleu.py
 rouge_path=$prog_root/rouge/rouge.py
 
 storage_root=/home/amirresm/projects/def-fard/amirresm
-parent_path=/home/amirresm/projects/def-fard/amirresm/outputs/rr_experiments/$config_title
+parent_path=/home/amirresm/projects/def-fard/amirresm/outputs/rr_experiments/$lang/$config_title
 
 data=$storage_root/data/CodeSearchNet/$lang
 model_path=$storage_root/models/$model
@@ -88,7 +88,7 @@ test_file="${data}/test.jsonl"
 export HF_EVALUATE_OFFLINE=1
 export HF_DATASETS_OFFLINE=1
 
-${prog_root}/checkmem.sh 180 "${output_dir}/memuse.txt"
+${prog_root}/checkmem.sh 180 "${output_dir}/memuse.txt" &
 
 echo "Bash going to Python..."
 python3 $script_path \
