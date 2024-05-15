@@ -34,7 +34,7 @@ bleu_path=$prog_root/bleu/bleu.py
 rouge_path=$prog_root/rouge/rouge.py
 
 storage_root=/home/amirresm/projects/def-fard/amirresm
-parent_path=/home/amirresm/projects/def-fard/amirresm/outputs/rr_experiments/$config_title
+parent_path=/home/amirresm/projects/def-fard/amirresm/outputs/rr_experiments/$lang/$config_title
 
 data=$storage_root/data/CodeSearchNet/$lang
 model_path=$storage_root/models/$model

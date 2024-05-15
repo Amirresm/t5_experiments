@@ -8,9 +8,9 @@
 
 # ./bash_utils/env_setup.sh
 module load StdEnv/2020  gcc/9.3.0  cuda/11.4 arrow/8.0.0 python/3.10
-virtualenv --no-download $ENV_PATH
+virtualenv --no-download "$ENV_PATH"
 #virtualenv $ENV_PATH
-source $SLURM_TMPDIR/env/bin/activate
+source "$SLURM_TMPDIR/env/bin/activate"
 pip install --no-index --upgrade pip
 #pip install --upgrade pip
 pip install --no-index numpy==1.23.5
