@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
-delay1=300
-delay2=300
+delay1=400
+delay2=400
 delay3=600
 
 echo "Memcheck > Memory checker started at: $(date)"

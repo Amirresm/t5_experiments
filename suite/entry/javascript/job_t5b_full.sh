@@ -122,7 +122,7 @@ python3 $script_path \
     --logging_strategy steps \
 	--logging_steps "0.1" \
 	--logging_dir $logging_dir \
-    --save_total_limit 10 \
+    --save_total_limit 2 \
     --metric_path $bleu_path \
     --metric_path_alt $rouge_path \
     --train_adapter $train_adapter \
