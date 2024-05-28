@@ -63,6 +63,12 @@ from transformers.utils.versions import require_version
 
 from bleu2.calc_bleu2 import calculate_bleu2
 
+try:
+    from codebleu import calc_codebleu
+    has_codebleu = True
+except ImportError:
+    has_codebleu = False
+
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
 check_min_version("4.26.0")
@@ -911,6 +917,12 @@ def main():
                 }
         if data_args.metric_path is not None:
             result = {**result, **result_bleu}
+
+        if has_codebleu:
+            cb_results = calc_codebleu([[l] for l in decoded_labels], decoded_preds, lang="python")
+            cb_results['codebleuP'] = results['codebleu'] * 100
+            result = {**result, **cb_results}
+
         return result
 
     # Early stopping
