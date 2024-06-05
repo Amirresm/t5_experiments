@@ -86,6 +86,11 @@ if __name__ == "__main__":
 
     generations = read_generations(path, limit=None)
 
+    # num = 3
+    # generations = generations[num-1:num]
+
+    # print(generations)
+
     # print(generations[0])
     
     refs = [[x["target"]] for x in generations]
