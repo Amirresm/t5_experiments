@@ -63,11 +63,12 @@ from transformers.utils.versions import require_version
 
 from bleu2.calc_bleu2 import calculate_bleu2
 
-try:
-    from codebleu import calc_codebleu
-    has_codebleu = True
-except ImportError:
-    has_codebleu = False
+has_codebleu = False
+# try:
+#     from codebleu import calc_codebleu
+#     has_codebleu = True
+# except ImportError:
+#     print("CodeBLEU not found", flush=True)
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -495,7 +496,7 @@ def main():
         and not training_args.overwrite_output_dir
     ):
         last_checkpoint = get_last_checkpoint(training_args.output_dir)
-        if last_checkpoint is None and len(os.listdir(training_args.output_dir)) > 0:
+        if last_checkpoint is None and len(os.listdir(training_args.output_dir)) > 3:
             raise ValueError(
                 f"Output directory ({training_args.output_dir}) already exists and is not empty. "
                 "Use --overwrite_output_dir to overcome."

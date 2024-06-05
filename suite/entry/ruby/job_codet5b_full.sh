@@ -22,7 +22,7 @@ pip install --no-deps /home/amirresm/files/research/summarization/adapters-0.1.2
 
 base_config_title=""
 lang="ruby"
-config_title="t5_base_full_${lang}_b16"
+config_title="codet5_base_full_${lang}_b16"
 
 model="codet5-base"
 adapter_config="none"
