@@ -32,12 +32,14 @@ import nltk  # Here to have a nice missing dependency error message early on
 import numpy as np
 from datasets import load_dataset
 
+import torch
 import adapters
 import evaluate
 import transformers
 from adapters import (
     AdapterArguments,
     Seq2SeqAdapterTrainer,
+    AdapterTrainer,
     setup_adapter_training,
     AdapterConfig,
 )
@@ -45,8 +47,10 @@ from filelock import FileLock
 from transformers import (
     AutoConfig,
     AutoModelForSeq2SeqLM,
+    AutoModelForCausalLM,
     AutoTokenizer,
     DataCollatorForSeq2Seq,
+    DataCollator,
     EarlyStoppingCallback,
     HfArgumentParser,
     MBart50Tokenizer,
@@ -55,7 +59,10 @@ from transformers import (
     MBartTokenizerFast,
     Seq2SeqTrainer,
     Seq2SeqTrainingArguments,
+    Trainer,
+    TrainingArguments,
     set_seed,
+    BitsAndBytesConfig,
 )
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version, is_offline_mode
@@ -185,6 +192,10 @@ class ModelArguments:
                 "the model's position embeddings."
             )
         },
+    )
+    quantization_mode: Optional[str] = field(
+        default=None,
+        metadata={"help": "Whether to quantize the model. '8bit' or '4bit'"},
     )
 
 
@@ -434,6 +445,7 @@ def main():
     logger.warning("Checking logger.warn")
     logger.error("Checking logger.error")
 
+    torch.cuda.empty_cache()
     parser = HfArgumentParser(
         (
             ModelArguments,
@@ -512,6 +524,7 @@ def main():
     # Set seed before initializing model.
     set_seed(training_args.seed)
 
+    is_decoder_only = "llama" in model_args.model_name_or_path.lower()
     # Get the datasets: you can either provide your own CSV/JSON training and evaluation files (see below)
     # or just provide the name of one of the public datasets available on the hub at https://huggingface.co/datasets/
     # (the dataset will be downloaded automatically from the datasets Hub).
@@ -597,19 +610,55 @@ def main():
     tokenizer.save_pretrained(model_args.tokenizer_name_or_path)
     logger.info(f"Tokenizer saved to {model_args.tokenizer_name_or_path}")
 
-    model = AutoModelForSeq2SeqLM.from_pretrained(
+    bnb_config = None
+    model_dtype = None
+    if model_args.quantization_mode == "4bit":
+        logger.info("Quantizing model to 4-bit")
+        model_dtype = torch.float16
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_compute_dtype=model_dtype,
+        )
+    elif model_args.quantization_mode == "8bit":
+        logger.info("Quantizing model to 8-bit")
+        model_dtype = None
+        bnb_config = BitsAndBytesConfig(
+            load_in_8bit=True,
+            # bnb_4bit_quant_type='nf4',
+            # bnb_4bit_use_double_quant=True,
+            # bnb_4bit_compute_dtype=bfloat16
+        )
+
+    ModelClass = AutoModelForSeq2SeqLM
+    if is_decoder_only:
+        ModelClass = AutoModelForCausalLM
+
+    model = ModelClass.from_pretrained(
         model_args.model_name_or_path,
         from_tf=bool(".ckpt" in model_args.model_name_or_path),
         config=config,
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
+        quantization_config=bnb_config,
+        device_map="auto" if is_decoder_only else None,
+        torch_dtype=model_dtype,
     )
 
     # Convert the model into an adapter model
     if adapter_args.train_adapter:
         adapters.init(model)
         adapter_name = f"{model_args.config_title}_adapter"
+
+    if is_decoder_only and not tokenizer.pad_token:
+        # Add padding token if missing, e.g. for llama tokenizer
+        #tokenizer.pad_token = tokenizer.eos_token  # https://github.com/huggingface/transformers/issues/22794
+        tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.padding_side = "right"
+        # tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        # model.resize_token_embeddings(len(tokenizer))
 
     # We resize the embeddings only when necessary to avoid index errors. If you are creating a model from scratch
     # on a small vocab and want a smaller embedding size, remove this test.
@@ -630,9 +679,11 @@ def main():
             )
 
     if model.config.decoder_start_token_id is None:
-        raise ValueError(
-            "Make sure that `config.decoder_start_token_id` is correctly defined"
-        )
+        # raise ValueError(
+        #     "Make sure that `config.decoder_start_token_id` is correctly defined"
+        # )
+        logger.info("No decoder_start_token_id found in config")
+        # model.config.decoder_start_token_id = model.config.eos_token_id
 
     if (
         hasattr(model.config, "max_position_embeddings")
@@ -835,7 +886,8 @@ def main():
     label_pad_token_id = (
         -100 if data_args.ignore_pad_token_for_loss else tokenizer.pad_token_id
     )
-    data_collator = DataCollatorForSeq2Seq(
+    data_collator_class = DataCollator if is_decoder_only and False else DataCollatorForSeq2Seq
+    data_collator = data_collator_class(
         tokenizer,
         model=model,
         label_pad_token_id=label_pad_token_id,
@@ -933,6 +985,7 @@ def main():
     # Setup adapters
     if adapter_args.train_adapter:
         adapter_args.adapter_config = AdapterConfig.load(adapter_args.adapter_config)
+        model.adapter_to(adapter_name, training_args.device, dtype=model_dtype)
         setup_adapter_training(model, adapter_args, adapter_name)
 
     if (
@@ -950,10 +1003,16 @@ def main():
     if adapter_args.train_adapter:
         logger.info(f"Adapter Summary:\n{model.adapter_summary()}")
 
+    logger.info(f"Model memory footprint:\n{model.get_memory_footprint()}")
+
     # Initialize our Trainer
-    trainer_class = (
-        Seq2SeqAdapterTrainer if adapter_args.train_adapter else Seq2SeqTrainer
-    )
+    # trainer_class = (
+    #     Seq2SeqAdapterTrainer if adapter_args.train_adapter else Seq2SeqTrainer
+    # )
+    if adapter_args.train_adapter:
+        trainer_class = AdapterTrainer if "llama" in model_args.model_name_or_path.lower() else Seq2SeqAdapterTrainer
+    else:
+        trainer_class = Trainer if "llama" in model_args.model_name_or_path.lower() else Seq2SeqTrainer
     trainer = trainer_class(
         model=model,
         args=training_args,
@@ -1010,6 +1069,8 @@ def main():
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
         metrics = trainer.evaluate(
+            metric_key_prefix="eval"
+        ) if is_decoder_only else trainer.evaluate(
             max_length=max_length, num_beams=num_beams, metric_key_prefix="eval"
         )
         max_eval_samples = (
@@ -1028,9 +1089,13 @@ def main():
         predict_results = trainer.predict(
             predict_dataset,
             metric_key_prefix="predict",
+        ) if is_decoder_only else trainer.predict(
+            predict_dataset,
+            metric_key_prefix="predict",
             max_length=max_length,
             num_beams=num_beams,
         )
+
         metrics = predict_results.metrics
         max_predict_samples = (
             data_args.max_predict_samples
@@ -1041,6 +1106,9 @@ def main():
 
         trainer.log_metrics("predict", metrics)
         trainer.save_metrics("predict", metrics)
+
+        logger.info(f"Predict metrics: {metrics}")
+        logger.info(f"Predict results:\n {predict_results}")
 
         if trainer.is_world_process_zero():
             if training_args.predict_with_generate:

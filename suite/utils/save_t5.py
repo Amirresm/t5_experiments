@@ -7,6 +7,7 @@ from transformers import (
     T5ForConditionalGeneration,
     T5Config,
 )
+
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
     datefmt="%m/%d/%Y %H:%M:%S",
@@ -45,5 +46,6 @@ def main():
 
     model.save_pretrained(args.output_dir)
     tokenizer.save_pretrained(args.output_dir)
+
 
 main()

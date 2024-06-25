@@ -51,7 +51,7 @@ print('%*s : %*s' % (20, 'Python', 20, 'Very Good'))
 ->Reconstructed Target:
 print('%*s : %*s' % (20, 'Python', 20, 'Very Good'))
 ->Reconstructed Predication:
-"""Python,:` and 'Very Good' to be `20`""".format(20)
+"""Python,:` and `Very Good` to be `20`""".format(20)
 ->Raw Input:
 implement: format number of spaces between strings `Python`, `:` and `Very Good` to be `20`
 ->Raw Target:
@@ -201,7 +201,7 @@ Split a multi-line string ` a \n b \r\n c ` by new line character `\n`
 ->Reconstructed Target:
 """:""".join(str(x) for x in b)
 ->Reconstructed Predication:
-""":{}".format(b)
+""":{0}""".format(b)
 ->Raw Input:
 implement: concatenate elements of list `b` by a colon ":"
 ->Raw Target:
@@ -306,7 +306,7 @@ time.strptime('30/03/09 16:31:32.123', '%d/%m/%y %H:%M:%S.%f')
 ->Reconstructed Target:
 float('123,456.908'.replace(',', ''))
 ->Reconstructed Predication:
-float('{0,1}.908'.format(123, 456.908))
+float('{0,456.908}'.format(123,456.908))
 ->Raw Input:
 implement: convert a string `123,456.908` with dot and comma into a floating number
 ->Raw Target:
@@ -385,7 +385,7 @@ meta = u.info()
 file_size = int(meta.getheaders('Content-Length')[0])
 print(('Downloading: %s Bytes: %
 ->Reconstructed Predication:
-urllib.request.urlretrieve(url, file_name)
+file_name = urllib.request.urlretrieve(url, file_name)
 ->Raw Input:
 implement: download a file `url` over HTTP and save to `file_name`
 ->Raw Target:
@@ -537,7 +537,7 @@ pd.merge(split_df, csv_df, on=['key'], suffixes=('_left', '_right'))
 ->Reconstructed Target:
 input('Enter your input:')
 ->Reconstructed Predication:
-input('\x1b[1m' )
+input('\x1b[1m').decode('utf-8')
 ->Raw Input:
 implement: read keyboard-input
 ->Raw Target:
@@ -567,7 +567,7 @@ input('Enter your input:')
 ->Reconstructed Target:
 pickle.dump(mylist, open('save.txt', 'wb'))
 ->Reconstructed Predication:
-mylist.save('save.txt')
+pickle.dump(mylist,'save.txt')
 ->Raw Input:
 implement: python save list `mylist` to file object'save.txt'
 ->Raw Target:
@@ -657,7 +657,7 @@ x = np.asarray(x).reshape(1, -1)[(0), :]
 ->Reconstructed Target:
 struct.unpack('!f', '470FC614'.decode('hex'))[0]
 ->Reconstructed Predication:
-float('470FC614')
+struct.unpack('d', '470FC614')[0]
 ->Raw Input:
 implement: convert hex string '470FC614' to a float number
 ->Raw Target:
@@ -672,7 +672,7 @@ sum(sum(i) if isinstance(i, list) else i for i in L)
 ->Reconstructed Target:
 my_dict.update((x, y * 2) for x, y in list(my_dict.items()))
 ->Reconstructed Predication:
-dict((k, 2) for k in my_dict.keys())
+print(dict([(v, k) * 2) for k, v in my_dict.items()])
 ->Raw Input:
 implement: Multiple each value by `2` for all keys in a dictionary `my_dict`
 ->Raw Target:
@@ -732,7 +732,7 @@ Join elements of list `l` with a comma `,`
 ->Reconstructed Target:
 list(reversed(list(range(10))))
 ->Reconstructed Predication:
-sorted(list(range(10)), key=lambda x: x[1])
+[i for i in range(10)]
 ->Raw Input:
 implement: reverse the list that contains 1 to 10
 ->Raw Target:
@@ -897,7 +897,7 @@ dict((k, [d[k] for d in dicts]) for k in dicts[0])
 ->Reconstructed Target:
 [k for k, v in list(Counter(mylist).items()) if v > 1]
 ->Reconstructed Predication:
-print([y for x in mylist if x not in list(set(x)))
+print([key for key, value in itertools.groupby(mylist, operator.itemgetter(1))]).tolist()
 ->Raw Input:
 implement: identify duplicate values in list `mylist`
 ->Raw Target:
@@ -987,7 +987,7 @@ db.execute("INSERT INTO present VALUES('test2', ?, 10)", (None,))
 ->Reconstructed Target:
 np.savetxt('c:\\data\\np.txt', df.values, fmt='%d')
 ->Reconstructed Predication:
-np.savetxt('np.txt', df.values)
+np.savetxt('np.txt', df)
 ->Raw Input:
 implement: write the data of dataframe `df` into text file `np.txt`
 ->Raw Target:
@@ -1032,7 +1032,7 @@ a.extend(list(b))
 ->Reconstructed Target:
 print(x.rsplit('-', 1)[0])
 ->Reconstructed Predication:
-re.rsplit('-','', 1)
+re.sub('(?<=.)(?=.)', '-', name)
 ->Raw Input:
 implement: get the last part of a string before the character '-'
 ->Raw Target:
@@ -1047,7 +1047,7 @@ np.savetxt('c:\\data\\np.txt', df.values, fmt='%d')
 ->Reconstructed Target:
 ftp.storlines('STOR'+ filename, open(filename, 'r'))
 ->Reconstructed Predication:
-ftp.storbinary('STOR', os.path.realpath(__file__))
+ftp.storbinary('STOR', os.path.abspath(existGDBPath))
 ->Raw Input:
 implement: upload file using FTP
 ->Raw Target:
@@ -1077,7 +1077,7 @@ print(x.rpartition('-')[0])
 ->Reconstructed Target:
 np.maximum([2, 3, 4], [1, 5, 2])
 ->Reconstructed Predication:
-np.ma.array([2, 3, 4], [1, 5, 2])[(None), :, (None)]
+np.ma.array([2, 3, 4], [1, 5, 2])
 ->Raw Input:
 implement: create array containing the maximum value of respective elements of array `[2, 3, 4]` and array `[1, 5, 2]`
 ->Raw Target:
@@ -1092,7 +1092,7 @@ print(x.rsplit('-', 1)[0])
 ->Reconstructed Target:
 print(l[3:] + l[:3])
 ->Reconstructed Predication:
-print('\n'.join([l[i:i + 3]) for i in range(0, len(l), 3)])
+print('\n'.join([l[i:i + 3] for i in range(0, len(l), 3)]))
 ->Raw Input:
 implement: print a list `l` and move first 3 elements to the end of the list
 ->Raw Target:
@@ -1165,7 +1165,7 @@ print(l[3:] + l[:3])
 ->Reconstructed Target:
 db.GqlQuery('SELECT * FROM Schedule WHERE station = $1', foo.key())
 ->Reconstructed Predication:
-engine.execute('SELECT * FROM Schedule WHERE station = $1', (foo.key()),)
+engine.query('SELECT * FROM Schedule WHERE station = $1', parameter='foo.key()')
 ->Raw Input:
 implement: Google App Engine execute GQL query 'SELECT * FROM Schedule WHERE station = $1' with parameter `foo.key()`
 ->Raw Target:
@@ -1229,7 +1229,7 @@ datetime.datetime.now().strftime('%H:%M:%S.%f')
 ->Reconstructed Target:
 """({:d} goals, ${:d})""".format(self.goals, self.penalties)
 ->Reconstructed Predication:
-"""{0!r}, {1!r}""".format(self.goals, self.penalties)
+"""{0} {1}""".format(self.goals, self.penalties)
 ->Raw Input:
 implement: format the variables `self.goals` and `self.penalties` using string formatting
 ->Raw Target:
@@ -1289,7 +1289,7 @@ df.set_index(list('BC')).drop(tuples, errors='ignore').reset_index()
 ->Reconstructed Target:
 [''.join(str(d) for d in x) for x in L]
 ->Reconstructed Predication:
-"""""".join(['{0:.3e}'.format(x) for x in L])
+"""""".join(['{0:.3e}'.format(i) for i in L])
 ->Raw Input:
 implement: combine elements of each list in list `L` into digits of a single integer
 ->Raw Target:
@@ -1334,7 +1334,7 @@ format string "({0.goals} goals, ${0.penalties})"
 ->Reconstructed Target:
 [x for x in ['AAT', 'XAC', 'ANT', 'TTA'] if 'X' not in x and 'N' not in x]
 ->Reconstructed Predication:
-[x for x in s if x not in ('X', 'N'])]
+[x for x in s if x not in ('X', 'N')]
 ->Raw Input:
 implement: removing an element from a list based on a predicate 'X' or 'N'
 ->Raw Target:
@@ -1349,7 +1349,7 @@ convert list of lists `L` to list of integers
 ->Reconstructed Target:
 text = re.sub('\\b(\\w+)( \\1\\b)+', '\\1', text)
 ->Reconstructed Predication:
-re.sub('\\w+\\s+', '', text)
+re.sub('(?<!\\S)((\\S+)(?:\\s+\\2))(?:\\s+\\2)+(?!\\S)', '\\1', text)
 ->Raw Input:
 implement: Remove duplicate words from a string `text` using regex
 ->Raw Target:
@@ -1499,7 +1499,7 @@ open(filename, 'w').close()
 ->Reconstructed Target:
 plt.plot(x, y, label='H\u2082O')
 ->Reconstructed Predication:
-plt.plot(x, y, text='H20', marker='o', color='green')
+plt.plot(x, y, text=('H20', '2'))
 ->Raw Input:
 implement: subscript text 'H20' with '2' as subscripted in matplotlib labels for arrays 'x' and 'y'.
 ->Raw Target:
@@ -1514,7 +1514,7 @@ datetime.datetime.strptime(string_date, '%Y-%m-%d %H:%M:%S.%f')
 ->Reconstructed Target:
 plt.plot(x, y, label='$H_2O$')
 ->Reconstructed Predication:
-plt.plot(x, y, text='H20', marker='o', color='green')
+plt.plot(x, y, text=('H20', '2'))
 ->Raw Input:
 implement: subscript text 'H20' with '2' as subscripted in matplotlib labels for arrays 'x' and 'y'.
 ->Raw Target:
@@ -1748,7 +1748,7 @@ except OSError:
 ->Reconstructed Target:
 print(soup.find('name').string)
 ->Reconstructed Predication:
-soup.find_all('name')
+soup.find_all(text=re.compile('name$'))
 ->Raw Input:
 implement: access a tag called "name" in beautifulsoup `soup`
 ->Raw Target:
@@ -1782,7 +1782,7 @@ except OSError as exception:
 ->Reconstructed Target:
 np.concatenate((A, B))
 ->Reconstructed Predication:
-T = scipy.matrix((A.T, B).T)
+T = scipy.matrix((A.T, A.T), (A.T, B).T)
 ->Raw Input:
 implement: Create new matrix object  by concatenating data from matrix A and matrix B
 ->Raw Target:
@@ -1812,7 +1812,13 @@ re.sub('\\D', '', 'aas30dsa20')
 ->Reconstructed Target:
 os.stat(filepath).st_size
 ->Reconstructed Predication:
-len(filepath.read())
+def bufcount(filepath):
+    f = open(filepath)
+    buf_size = (1024 * 1024)
+    read_f = f.read
+    buf = read_f(buf_size)
+    while buf:
+        print(buf)
 ->Raw Input:
 implement: Get the characters count in a file `filepath`
 ->Raw Target:
@@ -1842,7 +1848,7 @@ print(soup.find('name').string)
 ->Reconstructed Target:
 Counter(l)
 ->Reconstructed Predication:
-sum(1 for i, j in enumerate(l) if j!= 0)
+sum(len(j) for j in l)
 ->Raw Input:
 implement: count the occurrences of items in list `l`
 ->Raw Target:
@@ -1857,7 +1863,7 @@ records = dict((record['_id'], record) for record in cursor)
 ->Reconstructed Target:
 [[x, l.count(x)] for x in set(l)]
 ->Reconstructed Predication:
-sum(1 for i, j in enumerate(l) if j!= 0)
+sum(len(j) for j in l)
 ->Raw Input:
 implement: count the occurrences of items in list `l`
 ->Raw Target:
@@ -1872,7 +1878,7 @@ np.concatenate((A, B))
 ->Reconstructed Target:
 dict(((x, l.count(x)) for x in set(l)))
 ->Reconstructed Predication:
-sum(1 for i, j in enumerate(l) if j!= 0)
+sum(len(j) for j in l)
 ->Raw Input:
 implement: count the occurrences of items in list `l`
 ->Raw Target:
@@ -1962,7 +1968,7 @@ dict(((x, l.count(x)) for x in set(l)))
 ->Reconstructed Target:
 file.seek(0)
 ->Reconstructed Predication:
-os.system('curser')
+os.chdir('.\\chapter3')
 ->Raw Input:
 implement: Put the curser at beginning of the file
 ->Raw Target:
@@ -1992,7 +1998,7 @@ shutil.copy(srcfile, dstdir)
 ->Reconstructed Target:
 del d['ele']
 ->Reconstructed Predication:
-d = {k: v for k, v in d.items() if k!= 'ele'}
+d = dict((k, v) for k, v in d.items() if 'ele' in k)
 ->Raw Input:
 implement: remove key 'ele' from dictionary `d`
 ->Raw Target:
@@ -2007,7 +2013,7 @@ max(k for k, v in x.items() if v != 0)
 ->Reconstructed Target:
 MyModel.objects.update(timestamp=F('timestamp') + timedelta(days=36524.25))
 ->Reconstructed Predication:
-MyModel.timestamp = datetime.datetime.combine(timestamp, datetime.time.min) + 100
+MyModel.objects.filter(timestamp__gte=timestamp + 100)
 ->Raw Input:
 implement: Update datetime field in `MyModel` to be the existing `timestamp` plus 100 years
 ->Raw Target:
@@ -2037,7 +2043,7 @@ max(k for k, v in x.items() if v != 0)
 ->Reconstructed Target:
 str(int(x) + 1).zfill(len(x))
 ->Reconstructed Predication:
-(x + 0.5)
+x = int(round(x, 2))
 ->Raw Input:
 implement: increment a value with leading zeroes in a number `x`
 ->Raw Target:
@@ -2082,7 +2088,7 @@ del d['ele']
 ->Reconstructed Target:
 tuple(l)
 ->Reconstructed Predication:
-tuple(map(int, t))
+[(a, b) for a, (b, c) in t]
 ->Raw Input:
 implement: Convert list `t` to tuple
 ->Raw Target:
@@ -2097,7 +2103,7 @@ MyModel.objects.update(timestamp=F('timestamp') + timedelta(days=36524.25))
 ->Reconstructed Target:
 level1 = map(list, level1)
 ->Reconstructed Predication:
-[i for i in level1]
+[int(x) for x in level1]
 ->Raw Input:
 implement: Convert tuple `level1` to list
 ->Raw Target:
@@ -2112,7 +2118,7 @@ merge list `['it']` and list `['was']` and list `['annoying']` into one list
 ->Reconstructed Target:
 pprint.pprint(dataobject, logFile)
 ->Reconstructed Predication:
-pprint(dataobject, logFile)
+pprint(dataobject, file=logFile)
 ->Raw Input:
 implement: send the output of pprint object `dataobject` to file `logFile`
 ->Raw Target:
@@ -2157,7 +2163,7 @@ list(t)
 ->Reconstructed Target:
 df[df['BoolCol'] == True].index.tolist()
 ->Reconstructed Predication:
-[i for i, v in enumerate(df['BoolCol']) if v == True]
+[i for i, v in enumerate(df['BoolCol']) if v[1] == True]
 ->Raw Input:
 implement: get list of indexes of rows where column 'BoolCol' values match True
 ->Raw Target:
@@ -2247,7 +2253,7 @@ df[df['BoolCol'] == True].index.tolist()
 ->Reconstructed Target:
 raw_byte_string.decode('unicode_escape')
 ->Reconstructed Predication:
-raw_byte_string[0:-1].decode('raw_byte_string')
+binascii.a2b_hex(raw_byte_string)
 ->Raw Input:
 implement: convert a raw string `raw_byte_string` into a normal string
 ->Raw Target:
@@ -2262,7 +2268,7 @@ df[df['BoolCol']].index.tolist()
 ->Reconstructed Target:
 [m.group(0) for m in re.finditer('(\\d)\\1*', s)]
 ->Reconstructed Predication:
-repeated = re.findall('\\b(?:b|c)\\b', s)
+print([a for a, b in re.findall('((\\w)\\2*)', s)])
 ->Raw Input:
 implement: split a string `s` with into all strings of repeated characters
 ->Raw Target:
@@ -2322,7 +2328,7 @@ raw_string.decode('string_escape')
 ->Reconstructed Target:
 df[df['ids'].str.contains('ball')]
 ->Reconstructed Predication:
-session.query(Book.ids).filter(ball__in=ids)
+df.groupby(df.ids).filter(lambda x: x.word == 'ball')
 ->Raw Input:
 implement: filter rows containing key word `ball` in column `ids`
 ->Raw Target:
@@ -2397,7 +2403,7 @@ soup.find('div', id='main-content').decompose()
 ->Reconstructed Target:
 np.array([zip(x, y) for x, y in zip(a, b)])
 ->Reconstructed Predication:
-np.concatenate((a, b), axis=1).ravel().tolist()
+[(a[i], b[i]) for i in range(len(a))]
 ->Raw Input:
 implement: join each element in array `a` with element at the same index in array `b` as a tuple
 ->Raw Target:
@@ -2457,7 +2463,7 @@ df.reset_index(level=['tick', 'obs'])
 ->Reconstructed Target:
 'abcd}def}'.rfind('}')
 ->Reconstructed Predication:
-"""abcd}def}""".rfind('{', 1)
+"""abcd}def}""".rfind('{', 1).group(1)
 ->Raw Input:
 implement: Find last occurrence of character '}' in string "abcd}def}"
 ->Raw Target:
@@ -2487,7 +2493,7 @@ np.array([zip(x, y) for x, y in zip(a, b)])
 ->Reconstructed Target:
 [(x['x'], x['y']) for x in d]
 ->Reconstructed Predication:
-[(d[x]['y'], d[x]['y']) for d in d]
+[(d['x'], d['y']) for d in d]
 ->Raw Input:
 implement: extract all the values with keys 'x' and 'y' from a list of dictionaries `d` to list of tuples
 ->Raw Target:
@@ -2652,7 +2658,7 @@ df.replace({'\n': '<br>'}, regex=True)
 ->Reconstructed Target:
 re.sub('[^A-Za-z0-9]+', '', mystring)
 ->Reconstructed Predication:
-re.sub('[^\\w', '', mystring)
+re.sub('[\\W_]+', '', mystring)
 ->Raw Input:
 implement: remove all special characters, punctuation and spaces from a string `mystring` using regex
 ->Raw Target:
@@ -2682,7 +2688,7 @@ create a list containing each two adjacent letters in string `word` as its eleme
 ->Reconstructed Target:
 matrix = [[a, b], [c, d], [e, f]]
 ->Reconstructed Predication:
-matrix = scipy.matrix([3, 2]).reshape(3, -1)
+matrix = [[3, 2] for i in range(3)]
 ->Raw Input:
 implement: Create multidimensional array `matrix` with 3 rows and 2 columns in python
 ->Raw Target:
@@ -2697,7 +2703,7 @@ list(map(lambda x, y: x + y, word[:-1], word[1:]))
 ->Reconstructed Target:
 mystring.replace(' ', '_')
 ->Reconstructed Predication:
-re.sub('\\s+', '_', name)
+re.sub('([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))', '\\1\\2', name)
 ->Raw Input:
 implement: replace spaces with underscore
 ->Raw Target:
@@ -2832,7 +2838,7 @@ os.path.splitext(filename)[0]
 ->Reconstructed Target:
 all(predicate(x) for x in string)
 ->Reconstructed Predication:
-return predicate(string.encode('utf-8'))
+return predicate(string)
 ->Raw Input:
 implement: check characters of string `string` are true predication of function `predicate`
 ->Raw Target:
@@ -2847,7 +2853,7 @@ get a list containing the sum of each element `i` in list `l` plus the previous 
 ->Reconstructed Target:
 os.statvfs('/').f_files - os.statvfs('/').f_ffree
 ->Reconstructed Predication:
-os.path.split('\\')[-1]
+os.path.split(os.path.abspath(__file__))
 ->Raw Input:
 implement: determine number of files on a drive with python
 ->Raw Target:
@@ -2862,7 +2868,7 @@ split a string `Docs/src/Scripts/temp` by `/` keeping `/` in the result
 ->Reconstructed Target:
 user_list = [int(number) for number in user_input.split(',')]
 ->Reconstructed Predication:
-user_list = [int(x) for x in user_input.split(',')]
+user_list = [int(x) for x in user_input.split()]
 ->Raw Input:
 implement: convert string `user_input` into a list of integers `user_list`
 ->Raw Target:
@@ -2892,7 +2898,7 @@ df['D'] = df['B']
 ->Reconstructed Target:
 ut.sort(key=cmpfun, reverse=True)
 ->Reconstructed Predication:
-ut.sort(key=cmpfun, reverse=True)
+sorted(ut, key=cmpfun, reverse=True)
 ->Raw Input:
 implement: sort a list of objects `ut`, based on a function `cmpfun` in descending order
 ->Raw Target:
@@ -2952,7 +2958,7 @@ cursor.fetchone()[0]
 ->Reconstructed Target:
 driver.findElement(By.linkText('Send InMail')).click()
 ->Reconstructed Predication:
-browser.find_element_by_css_selector('a', href=re.compile('.*send inmail.*'))
+browser.find_element_by_css_selector('a', href=re.compile('.*Send InMail.*'))
 ->Raw Input:
 implement: click a href button having text `Send InMail` with selenium
 ->Raw Target:
@@ -2967,7 +2973,7 @@ user_list = [int(number) for number in user_input.split(',')]
 ->Reconstructed Target:
 driver.find_element_by_link_text('Send InMail').click()
 ->Reconstructed Predication:
-browser.find_element_by_css_selector('a', href=re.compile('.*send inmail.*')))
+browser.find_element_by_css_selector('a', href=re.compile('.*send inmail.*')).click()
 ->Raw Input:
 implement: click a href button with text 'Send InMail' with selenium
 ->Raw Target:
@@ -2982,7 +2988,7 @@ Get a list of integers by splitting  a string `user` with comma
 ->Reconstructed Target:
 'ME' + str(i)
 ->Reconstructed Predication:
-'ME'.format(i)
+'ME'.join(str(i))
 ->Raw Input:
 implement: cast an int `i` to a string and concat to string 'ME'
 ->Raw Target:
@@ -3028,7 +3034,7 @@ ut.sort(key=lambda x: x.count, reverse=True)
 ->Reconstructed Target:
 re.findall('\\b(\\w+)d\\b', s)
 ->Reconstructed Predication:
-re.split('\\b(?:d+.*?)\\b', s)
+[k for k in s if 'd' in k]
 ->Raw Input:
 implement: split string `s` by words that ends with 'd'
 ->Raw Target:
@@ -3088,7 +3094,7 @@ driver.find_element_by_link_text('Send InMail').click()
 ->Reconstructed Target:
 list(OrderedDict.fromkeys('abracadabra'))
 ->Reconstructed Predication:
-[x for x in set(abracadabra) if x not in list(abracadabra)]
+[i for i in set(abracadabra) if i not in list(abracadabra)]
 ->Raw Input:
 implement: Removing duplicates in list `abracadabra`
 ->Raw Target:
@@ -3118,7 +3124,7 @@ df.sort_values(['System_num', 'Dis'])
 ->Reconstructed Target:
 numpy.array(a)[0].tolist()
 ->Reconstructed Predication:
-a[0]
+a = [row[0] for row in a]
 ->Raw Input:
 implement: Convert the first row of numpy matrix `a` to a list
 ->Raw Target:
@@ -3148,7 +3154,7 @@ l.sort(key=lambda t: len(t[1]), reverse=True)
 ->Reconstructed Target:
 """ """.join([('%d@%d' % t) for t in l])
 ->Reconstructed Predication:
-"""@""".join(x[0] for x in l)
+"""@""".join([str(i) for i in l])
 ->Raw Input:
 implement: convert elements of each tuple in list `l` into a string  separated by character `@`
 ->Raw Target:
@@ -3208,7 +3214,7 @@ list(set(source_list))
 ->Reconstructed Target:
 df['A'][(df['B'] > 50) & (df['C'] == 900)]
 ->Reconstructed Predication:
-df[['A', 'B'] > 50, ('C', 900)]
+df[(df['A'] > 50) | (df['B'] == 900)]
 ->Raw Input:
 implement: select values from column 'A' for which corresponding values in column 'B' will be greater than 50, and in column 'C' - equal 900 in dataframe `df`
 ->Raw Target:
@@ -3418,7 +3424,7 @@ int()
 ->Reconstructed Target:
 d = ast.literal_eval("{'code1':1,'code2':1}")
 ->Reconstructed Predication:
-dict((x['code1': 1,'code2': 1) for x in 'code1', x['code2']])
+dict({'code1': 1,'code2': 1})
 ->Raw Input:
 implement: convert unicode string u"{'code1':1,'code2':1}" into dictionary
 ->Raw Target:
@@ -3448,7 +3454,7 @@ subprocess.call(['./test.sh'])
 ->Reconstructed Target:
 text = re.sub('^https?:\\/\\/.*[\\r\\n]*', '', text, flags=re.MULTILINE)
 ->Reconstructed Predication:
-text = re.sub('^\\s+', '', text)
+text = re.sub('url\\((\\w+)\\)', '\\1', text)
 ->Raw Input:
 implement: remove any url within string `text`
 ->Raw Target:
@@ -3463,7 +3469,7 @@ subprocess.call(['notepad'])
 ->Reconstructed Target:
 np.where(np.in1d(A, [1, 3, 4]).reshape(A.shape), A, 0)
 ->Reconstructed Predication:
-A[np.all(np.arange(A.shape[0])!= [1, 3, 4])]
+A[np.arange(A.shape[0])!= [1, 3, 4]]
 ->Raw Input:
 implement: replace all elements in array `A` that are not present in array `[1, 3, 4]` with zeros
 ->Raw Target:
@@ -3493,7 +3499,7 @@ encoded = base64.b64encode('data to be encoded')
 ->Reconstructed Target:
 subprocess.call(['/usr/bin/Rscript', '--vanilla', '/pathto/MyrScript.r'])
 ->Reconstructed Predication:
-os.system('/pathto/MyrScript.r')
+subprocess.call('/pathto/MyrScript.r', shell=True)
 ->Raw Input:
 implement: running r script '/pathto/MyrScript.r' from python
 ->Raw Target:
@@ -3644,10 +3650,8 @@ np.mean(a, axis=1)
 [line.split() for line in open('File.txt')]
 ->Reconstructed Predication:
 with open('File.txt', 'r') as ins:
-    try:
-        print((x.rstrip('\n'))
-    except IOError as exc:
-        print(exc)
+    for line in ins:
+        print(line)
 ->Raw Input:
 implement: Retrieve each line from a file 'File.txt' as a list
 ->Raw Target:
@@ -3752,7 +3756,7 @@ a[np.where((a[:, (0)] == 0) * (a[:, (1)] == 1))]
 ->Reconstructed Target:
 print('\xd0\xbf\xd1\x80\xd0\xb8'.encode('raw_unicode_escape'))
 ->Reconstructed Predication:
-print('\xd0\xbf\xd1\x80\xd0\xb8'.encode('utf-8'))
+print('\xd0\xbf\xd1\x80\xd0\xb8'.encode('raw_unicode_escape'))
 ->Raw Input:
 implement: print unicode string '\xd0\xbf\xd1\x80\xd0\xb8' with utf-8
 ->Raw Target:
@@ -3797,7 +3801,7 @@ result[0]['from_user']
 ->Reconstructed Target:
 re.findall('n(?<=[^n]n)n+(?=[^n])(?i)', s)
 ->Reconstructed Predication:
-re.findall('\\b(?:n+b)+b+\\b', s)
+re.findall('\\b\\d+\\b', s)
 ->Raw Input:
 implement: regex, find "n"s only in the middle of string `s`
 ->Raw Target:
@@ -3812,7 +3816,7 @@ Retrieve each line from a file 'File.txt' as a list
 ->Reconstructed Target:
 print('{0:.0f}%'.format(1.0 / 3 * 100))
 ->Reconstructed Predication:
-print('Total is %s' % 100)
+print('{:.100f}'.format(1/3*100))
 ->Raw Input:
 implement: display the float `1/3*100` as a percentage
 ->Raw Target:
@@ -3857,7 +3861,7 @@ df.groupby(['col1', 'col2'])['col3'].nunique().reset_index()
 ->Reconstructed Target:
 l.sort(key=lambda x: (x['title'], x['title_url'], x['id']))
 ->Reconstructed Predication:
-sorted(d, key=lambda x: (x['title'], 'title_url', 'id'))
+sorted(d, key=lambda x: (x['title', 'title_url', 'id']), reverse=True)
 ->Raw Input:
 implement: sort a list of dictionaries by the value of keys 'title', 'title_url', 'id' in ascending order.
 ->Raw Target:
@@ -3872,7 +3876,7 @@ any(key.startswith('EMP$$') for key in dict1)
 ->Reconstructed Target:
 heapq.nlargest(10, range(len(l1)), key=lambda i: abs(l1[i] - l2[i]))
 ->Reconstructed Predication:
-sorted(set(l1).difference(l2))
+[[(x - y) for x, y in zip(l1, l2)] for y in range(10)]
 ->Raw Input:
 implement: find 10 largest differences between each respective elements of list `l1` and list `l2`
 ->Raw Target:
@@ -3902,7 +3906,7 @@ pd.DataFrame({'email': sf.index, 'list': sf.values})
 ->Reconstructed Target:
 df.to_sql('test', engine, schema='a_schema')
 ->Reconstructed Predication:
-df.to_csv('test', index=False, schema='a_schema')
+df.to_csv('test', schema='a_schema')
 ->Raw Input:
 implement: write records in dataframe `df` to table 'test' in schema 'a_schema'
 ->Raw Target:
@@ -3932,7 +3936,7 @@ print('\xd0\xbf\xd1\x80\xd0\xb8'.encode('raw_unicode_escape'))
 ->Reconstructed Target:
 list(dict((x[0], x) for x in L).values())
 ->Reconstructed Predication:
-[x for x in set([y for y in L if y not in L])]
+[x for x in set(frozenset(item) for item in L)]
 ->Raw Input:
 implement: remove duplicate elements from list 'L'
 ->Raw Target:
@@ -3947,7 +3951,7 @@ Encode a latin character in string `Sopet\xc3\xb3n` properly
 ->Reconstructed Target:
 [line.rstrip('\n') for line in file]
 ->Reconstructed Predication:
-f = open(file, 'r')
+f = open('file', 'r').read()
 ->Raw Input:
 implement: read a file `file` without newlines
 ->Raw Target:
@@ -4126,7 +4130,7 @@ list(dict((x[0], x) for x in L).values())
 ->Reconstructed Target:
 """, """.join('(' + ', '.join(i) + ')' for i in L)
 ->Reconstructed Predication:
-"""""".join(['{0[0]}'.format(i) for i in L])
+"""""".join(item[0] for item in L)
 ->Raw Input:
 implement: convert list of tuples `L` to a string
 ->Raw Target:
@@ -4171,7 +4175,7 @@ get the position of item 1 in `testlist`
 ->Reconstructed Target:
 (n for n in [1, 2, 3, 5])
 ->Reconstructed Predication:
-itertools.chain(*list(range(len(a))))
+itertools.chain.from_iterable(list(range(1, 16)))
 ->Raw Input:
 implement: convert a list  into a generator object
 ->Raw Target:
@@ -4436,7 +4440,7 @@ reduce(lambda a, b: a + b, (('aa',), ('bb',), ('cc',)))
 ->Reconstructed Target:
 max([max(i) for i in matrix])
 ->Reconstructed Predication:
-np.max(matrix, key=lambda x: matrix[x])
+np.max(matrix, key=float)
 ->Raw Input:
 implement: find maximal value in matrix `matrix`
 ->Raw Target:
@@ -4466,7 +4470,7 @@ df['range'].replace(',', '-', inplace=True)
 ->Reconstructed Target:
 ip = re.findall('[0-9]+(?:\\.[0-9]+){3}', s)
 ->Reconstructed Predication:
-re.findall('<a href="http://www.google.com/ip/">')
+re.findall('<a href="http://www\\.example.com/">')
 ->Raw Input:
 implement: extract ip address from an html string
 ->Raw Target:
@@ -4662,7 +4666,7 @@ answer = str(round(answer, 2))
 ->Reconstructed Target:
 re.findall('\\(.+?\\)|\\w', '(zyx)bc')
 ->Reconstructed Predication:
-re.findall('\\((\\w+)\\)', '(zyx)bc')
+re.sub('\\((\\w+)\\)', '\\1', '(zyx)bc')
 ->Raw Input:
 implement: get whatever is between parentheses as a single match, and any char outside as an individual match in string '(zyx)bc'
 ->Raw Target:
@@ -4692,7 +4696,7 @@ df.groupby('A').filter(lambda x: len(x) > 1)
 ->Reconstructed Target:
 re.findall('\\(.*?\\)|\\w', '(zyx)bc')
 ->Reconstructed Predication:
-re.findall('\\|([^)]+\\)', '(zyx)bc')
+re.findall('\\b(?:zyx)bc\\b', '(zyx)bc')
 ->Raw Input:
 implement: match multiple regex patterns with the alternation operator `|` in a string `(zyx)bc`
 ->Raw Target:
@@ -4707,7 +4711,7 @@ append each line in file `myfile` into a list
 ->Reconstructed Target:
 elements = ['%{0}%'.format(element) for element in elements]
 ->Reconstructed Predication:
-print(re.sub('\\%{0}%', '', elements))
+print(re.sub('%{0}%', '', elements))
 ->Raw Input:
 implement: formate each string cin list `elements` into pattern '%{0}%'
 ->Raw Target:
@@ -4722,7 +4726,7 @@ lst = map(int, open('filename.txt').readlines())
 ->Reconstructed Target:
 subprocess.Popen(['background-process', 'arguments'])
 ->Reconstructed Predication:
-subprocess.call('background-process', arguments)
+subprocess.Popen(['background-process', 'arguments'])
 ->Raw Input:
 implement: Open a background process 'background-process' with arguments 'arguments'
 ->Raw Target:
@@ -4737,7 +4741,7 @@ plt.colorbar(mappable=mappable, cax=ax3)
 ->Reconstructed Target:
 [mydict[x] for x in mykeys]
 ->Reconstructed Predication:
-list(mydict.get(mykeys, []))
+[v for k, v in list(mydict.items()) if k in mykeys]
 ->Raw Input:
 implement: get list of values from dictionary'mydict' w.r.t. list of keys'mykeys'
 ->Raw Target:
@@ -4797,7 +4801,7 @@ datetime.now(pytz.utc)
 ->Reconstructed Target:
 re.split('(\\W+)', s)
 ->Reconstructed Predication:
-re.split('\\s+', s)
+re.findall('\\w+|[^\\w\\s]', 'your string')
 ->Raw Input:
 implement: split a string into a list of words and whitespace
 ->Raw Target:
@@ -4979,7 +4983,7 @@ dict([('Name', 'Joe'), ('Age', 22)])
 ->Reconstructed Target:
 b.append((a[0][0], a[0][2]))
 ->Reconstructed Predication:
-b.append([(i, j) for i, j in zip(a, [0][0], [0][2]))
+[(x + tuple(y)) for x, y in zip(a, b)]
 ->Raw Input:
 implement: append a tuple of elements from list `a` with indexes '[0][0] [0][2]' to list `b`
 ->Raw Target:
@@ -5024,7 +5028,7 @@ re.split('(\\W+)', s)
 ->Reconstructed Target:
 [x for x in range(len(stocks_list)) if stocks_list[x] == 'MSFT']
 ->Reconstructed Predication:
-sorted(stocks_list, key=lambda x: x[1].upper())[0]
+[i for i, stock in enumerate(stocks_list, 1) if 'MSFT' in stock]
 ->Raw Input:
 implement: find the index of an element 'MSFT' in a list `stocks_list`
 ->Raw Target:
@@ -5039,7 +5043,7 @@ df.plot(kind='barh', stacked=True)
 ->Reconstructed Target:
 ax.set_xticklabels(labels, rotation=45)
 ->Reconstructed Predication:
-ax.set_xticklabels(ax.xtick_labels().rotate(45, -1))
+ax.set_xticklabels(ax.xtick.get_majorticklabels(), rotation=45)
 ->Raw Input:
 implement: rotate the xtick labels of matplotlib plot `ax` by `45` degrees to make long labels readable
 ->Raw Target:
@@ -5295,7 +5299,7 @@ re.sub('[^\\w]', ' ', s)
 ->Reconstructed Target:
 pd.concat([df[0].apply(pd.Series), df[1]], axis=1)
 ->Reconstructed Predication:
-df.split(['', 'X'], axis=0)
+df.split(['A', 'B'], axis=0)
 ->Raw Input:
 implement: split a list in first column  into multiple columns keeping other columns as well in pandas data frame
 ->Raw Target:
@@ -5355,7 +5359,7 @@ re.split('[ ](?=[A-Z])', input)
 ->Reconstructed Target:
 q.put((-n, n))
 ->Reconstructed Predication:
-q.set_priority(0)
+q = PriorityQueue(reversed(q))
 ->Raw Input:
 implement: reverse a priority queue `q` in python without using classes
 ->Raw Target:
@@ -5520,7 +5524,7 @@ df.groupby('id').first()
 ->Reconstructed Target:
 data['weekday'] = data['my_dt'].apply(lambda x: x.weekday())
 ->Reconstructed Predication:
-data['weekday'] = data['my_dt'].str.split('-').str[0]
+data['weekday'] = data['my_dt'].str.split('-').str[0].astype(int)
 ->Raw Input:
 implement: create a new column `weekday` in pandas data frame `data` based on the values in column `my_dt`
 ->Raw Target:
@@ -5535,7 +5539,7 @@ pd.concat([df[0].apply(pd.Series), df[1]], axis=1)
 ->Reconstructed Target:
 sorted(x, key=x.get, reverse=True)
 ->Reconstructed Predication:
-sorted(list(x.items()), key=lambda x: x[1])
+sorted(list(x.items()), key=operator.itemgetter(1), reverse=True)
 ->Raw Input:
 implement: reverse sort Counter `x` by values
 ->Raw Target:
@@ -5550,7 +5554,7 @@ re.findall('src="js/([^"]*\\bjquery\\b[^"]*)"', data)
 ->Reconstructed Target:
 sorted(list(x.items()), key=lambda pair: pair[1], reverse=True)
 ->Reconstructed Predication:
-sorted(list(x.items()), key=lambda x: x[1])
+sorted(list(x.items()), key=operator.itemgetter(1), reverse=True)
 ->Raw Input:
 implement: reverse sort counter `x` by value
 ->Raw Target:
@@ -5655,7 +5659,7 @@ len(l)
 ->Reconstructed Target:
 df.xs('sat', level='day', drop_level=False)
 ->Reconstructed Predication:
-df['day'] = df['day'].strftime('%A') +'sat'
+df['day'] = df['day'].map(lambda x: x +'sat')
 ->Raw Input:
 implement: add a column 'day' with value'sat' to dataframe `df`
 ->Raw Target:
@@ -5730,7 +5734,7 @@ replace each 'a' with 'b' and each 'b' with 'a' in the string 'obama' in a singl
 ->Reconstructed Target:
 matplotlib.rc('font', **{'sans-serif': 'Arial', 'family':'sans-serif'})
 ->Reconstructed Predication:
-plt.rcParams.update({'font.family': 'Arial','size': '16M'})
+plt.plot(list(range(10)), font=Arial)
 ->Raw Input:
 implement: set font `Arial` to display non-ascii characters in matplotlib
 ->Raw Target:
@@ -5760,7 +5764,7 @@ data['weekday'] = data['my_dt'].apply(lambda x: x.weekday())
 ->Reconstructed Target:
 element.get_attribute('innerHTML')
 ->Reconstructed Predication:
-print(element.get_html())
+print(element.get_text())
 ->Raw Input:
 implement: get html source of Selenium WebElement `element`
 ->Raw Target:
@@ -5790,7 +5794,7 @@ sorted(list(x.items()), key=lambda pair: pair[1], reverse=True)
 ->Reconstructed Target:
 os.system('gnome-terminal -e \'bash -c "sudo apt-get update; exec bash"\'')
 ->Reconstructed Predication:
-os.system('gnome')
+os.system('sudo apt-get update')
 ->Raw Input:
 implement: open a 'gnome' terminal from python script and run 'sudo apt-get update' command.
 ->Raw Target:
@@ -5805,7 +5809,7 @@ np.vstack((a, b))
 ->Reconstructed Target:
 my_dict.update({'third_key': 1})
 ->Reconstructed Predication:
-{third_key: 1}
+dict((k, 1) for k, v in my_dict.items() if k!= 'third_key')
 ->Raw Input:
 implement: add an item with key 'third_key' and value 1 to an dictionary `my_dict`
 ->Raw Target:
@@ -5910,7 +5914,7 @@ return HttpResponse('Unauthorized', status=401)
 ->Reconstructed Target:
 np.column_stack(([1, 2, 3], [4, 5, 6]))
 ->Reconstructed Predication:
-numpy.dstack([1, 2, 3], [4, 5, 6])
+numpy.matrix([1, 2, 3], [4, 5, 6])
 ->Raw Input:
 implement: converting two lists `[1, 2, 3]` and `[4, 5, 6]` into a matrix
 ->Raw Target:
@@ -6105,7 +6109,7 @@ my_list.append(12)
 ->Reconstructed Target:
 re.sub('i', '', 'it is icy')
 ->Reconstructed Predication:
-re.sub('\\b(?:i|icy)\\b', '', 'it is icy')
+re.sub('\\b\\d+\\b', '', 'it is icy')
 ->Raw Input:
 implement: delete all instances of a character 'i' in a string 'it is icy'
 ->Raw Target:
@@ -6150,7 +6154,7 @@ df[df.columns[-1]]
 ->Reconstructed Target:
 [x for x in myList if x.n == 30]
 ->Reconstructed Predication:
-[elem for elem in myList if elem.n == 30]
+matching = [s for s in myList if s.n == 30]
 ->Raw Input:
 implement: get elements from list `myList`, that have a field `n` value 30
 ->Raw Target:
@@ -6180,7 +6184,7 @@ np.column_stack(([1, 2, 3], [4, 5, 6]))
 ->Reconstructed Target:
 map(int, eval(input('Enter the unfriendly numbers: ')))
 ->Reconstructed Predication:
-map(int, re.findall('\\d+', 'abcABC'))
+map(int, ['1', '2', '3']).split()
 ->Raw Input:
 implement: convert list of string numbers into list of integers
 ->Raw Target:
@@ -6302,7 +6306,7 @@ for i in range(256):
         ip = ('192.168.%d.%d' % (i, j))
         print(ip)
 ->Reconstructed Predication:
-for i in inet_ntoa(192.168.x.x) :
+for i in inet_ntoa(range('192.168.x.x')):
     pass
 ->Raw Input:
 implement: loop through the IP address range "192.168.x.x"
@@ -6322,7 +6326,7 @@ print('"{}"'.format(word))
 for (i, j) in product(list(range(256)), list(range(256))):
     pass
 ->Reconstructed Predication:
-for i in inet_ntoa(192.168.x.x) :
+for i in inet_ntoa(range('192.168.x.x')):
     pass
 ->Raw Input:
 implement: loop through the IP address range "192.168.x.x"
@@ -6339,7 +6343,7 @@ join a list of strings `list` using a space ' '
 ->Reconstructed Target:
 generator = iter_iprange('192.168.1.1', '192.168.255.255', step=1)
 ->Reconstructed Predication:
-for i in inet_ntoa(192.168.x.x) :
+for i in inet_ntoa(range('192.168.x.x')):
     pass
 ->Raw Input:
 implement: loop through the IP address range "192.168.x.x"
@@ -6370,8 +6374,8 @@ data = [line.strip() for line in open('C:/name/MyDocuments/numbers', 'r')]
 ->Reconstructed Target:
 target.write('%r\n%r\n%r\n' % (line1, line2, line3))
 ->Reconstructed Predication:
-with open(target, 'w') as f:
-    f.write(line1, line2, line3)
+for line in [line1, line2, line3] :
+    target.write(line)
 ->Raw Input:
 implement: write multiple strings `line1`, `line2` and `line3` in one line in a file `target`
 ->Raw Target:
@@ -6386,7 +6390,7 @@ delete all occurrences of character 'i' in string 'it is icy'
 ->Reconstructed Target:
 [y for x in data for y in (x if isinstance(x, list) else [x])]
 ->Reconstructed Predication:
-[item for item in data]
+print(', '.join(map(str, data)))
 ->Raw Input:
 implement: Convert list of lists `data` into a flat list
 ->Raw Target:
@@ -6461,7 +6465,7 @@ get elements from list `myList`, that have a field `n` value 30
 ->Reconstructed Target:
 arr = numpy.fromiter(codecs.open('new.txt', encoding='utf-8'), dtype='<U2')
 ->Reconstructed Predication:
-arr = numpy.loadtxt('new.txt', 'utf-8')
+arr = numpy.loadtxt('new.txt', 'r', encoding='utf-8')
 ->Raw Input:
 implement: load data containing `utf-8` from file `new.txt` into numpy array `arr`
 ->Raw Target:
@@ -6476,7 +6480,7 @@ nums = [int(x) for x in intstringlist]
 ->Reconstructed Target:
 l = sorted(l, key=itemgetter('time'), reverse=True)
 ->Reconstructed Predication:
-sorted(l, key=lambda d: d['time'], reverse=True)
+sorted(l, key=lambda x: x['time'], reverse=True)
 ->Raw Input:
 implement: reverse sort list of dicts `l` by value for key `time`
 ->Raw Target:
@@ -6506,7 +6510,7 @@ sys.stdout.write('.')
 ->Reconstructed Target:
 df.loc[df[0].str.contains('(Hel|Just)')]
 ->Reconstructed Predication:
-df.groupby(['Hel|Just']).any()
+df.loc[df.regex.findall('(Hel|Just)', regex=True)]
 ->Raw Input:
 implement: get rows of dataframe `df` that match regex '(Hel|Just)'
 ->Raw Target:
@@ -6555,7 +6559,7 @@ for file in os.listdir('/mydir'):
 ->Reconstructed Target:
 json.loads(request.body)
 ->Reconstructed Predication:
-json.load(request.body)
+json.loads(request.body)
 ->Raw Input:
 implement: decode json string `request.body` to python dict
 ->Raw Target:
@@ -6697,7 +6701,7 @@ print('foo\nbar'.encode('string_escape'))
 ->Reconstructed Target:
 [element for element in lst if not isinstance(element, str)]
 ->Reconstructed Predication:
-[x for x in lst if x not in ['s', 't']]
+[x for x in lst if x is not'string']
 ->Raw Input:
 implement: get all the elements except strings from the list 'lst'.
 ->Raw Target:
@@ -6727,7 +6731,7 @@ calculate the mean of each element in array `x` with the element previous to it
 ->Reconstructed Target:
 newlist = sorted(l, key=itemgetter('name'), reverse=True)
 ->Reconstructed Predication:
-sorted(l, key=lambda d: d.get('name', False), reverse=True)
+sorted(l, key=lambda d: d['name'], reverse=True)
 ->Raw Input:
 implement: sort a list of dictionaries `l` by values in key `name` in descending order
 ->Raw Target:
@@ -6772,7 +6776,7 @@ l = sorted(l, key=itemgetter('time'), reverse=True)
 ->Reconstructed Target:
 json.load(urllib.request.urlopen('url'))
 ->Reconstructed Predication:
-json.loads(url.get('json'))
+json.loads(urllib.request.urlopen('url'))
 ->Raw Input:
 implement: get json data from restful service 'url'
 ->Raw Target:
@@ -6832,7 +6836,7 @@ None
 ->Reconstructed Target:
 (t - datetime.datetime(1970, 1, 1)).total_seconds()
 ->Reconstructed Predication:
-(1970, 1, 1) - datetime(1970, 1, 1).seconds
+datetime.datetime.combine(1970, 1, 1).seconds
 ->Raw Input:
 implement: convert datetime object `(1970, 1, 1)` to seconds
 ->Raw Target:
@@ -6863,7 +6867,7 @@ json.loads(request.body)
 import imp
 imp.reload(module)
 ->Reconstructed Predication:
-globals()['__reload']()
+globals().update(module.__dict__)
 ->Raw Input:
 implement: reload a module `module`
 ->Raw Target:
@@ -6939,7 +6943,7 @@ replace dot characters  '.' associated with ascii letters in list `s` with space
 ->Reconstructed Target:
 [chr(i) for i in range(127)]
 ->Reconstructed Predication:
-list('\x00\x00\x80?\x00\x00\x00\x00\x00\x80@')
+list('\x00\x00\x80?\x00\x00\x00\x00@\x00\x00\x80@')
 ->Raw Input:
 implement: Create a list containing all ascii characters as its elements
 ->Raw Target:
@@ -6969,7 +6973,7 @@ subprocess.check_call('vasp | tee tee_output', shell=True)
 ->Reconstructed Target:
 re.sub('^[A-Z0-9]*(?![a-z])', '', string)
 ->Reconstructed Predication:
-re.search('([a-z])\\1+', string)
+re.search('([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))', string)
 ->Raw Input:
 implement: python regex - check for a capital letter with a following lowercase in string `string`
 ->Raw Target:
@@ -7066,7 +7070,7 @@ list_of_dicts.sort(key=operator.itemgetter('age'))
 ->Reconstructed Target:
 AuthorizedEmail.objects.filter(group=group).order_by('-added')[0]
 ->Reconstructed Predication:
-AuthorizedEmail._meta.pk.max(key=lambda x: x['added'])
+AuthorizedEmail.objects.extra(select={'added': 'Count(name)'}).max()
 ->Raw Input:
 implement: Django get maximum value associated with field 'added' in model `AuthorizedEmail`
 ->Raw Target:
@@ -7081,7 +7085,7 @@ df.groupby('prots').sum().sort('scores', ascending=False)
 ->Reconstructed Target:
 re.findall('Test([0-9.]*[0-9]+)', text)
 ->Reconstructed Predication:
-re.findall('\\d+(?=[^.]+$)', text)
+re.findall('\\d+\\.\\d+', text)
 ->Raw Input:
 implement: Find all numbers and dots from a string `text` using regex
 ->Raw Target:
@@ -7141,7 +7145,7 @@ Remove all strings from a list a strings `sents` where the values starts with `@
 ->Reconstructed Target:
 list(cf.get_range().get_keys())
 ->Reconstructed Predication:
-keys = [k for k in cf.keys()]
+keys = list(cf.keys())
 ->Raw Input:
 implement: get a list of all keys in Cassandra database `cf` with pycassa
 ->Raw Target:
@@ -7201,7 +7205,7 @@ re.sub('(\\_a)?\\.([^\\.]*)$', '_suff.\\2', 'long.file.name.jpg')
 ->Reconstructed Target:
 random.choice(os.listdir('C:\\'))
 ->Reconstructed Predication:
-os.path.join(os.path.dirname(__file__), 'C:\\')
+print(os.path.join(os.path.dirname(__file__), 'C:\\'))
 ->Raw Input:
 implement: choose a random file from the directory contents of the C drive, `C:\\`
 ->Raw Target:
@@ -7217,7 +7221,7 @@ imp.reload(module)
 ->Reconstructed Target:
 max(x.min(), x.max(), key=abs)
 ->Reconstructed Predication:
-numpy.argmax(x).argmax()
+numpy.argmax(x)
 ->Raw Input:
 implement: get the highest element in absolute value in a numpy matrix `x`
 ->Raw Target:
@@ -7232,7 +7236,7 @@ struct.unpack('H', struct.pack('h', number))
 ->Reconstructed Target:
 re.findall('"(http.*?)"', s, re.MULTILINE | re.DOTALL)
 ->Reconstructed Predication:
-url = re.findall('(?=\\.\\S)', s)
+print(re.findall('url(\\w+)', s))
 ->Raw Input:
 implement: Get all urls within text `s`
 ->Raw Target:
@@ -7247,7 +7251,7 @@ numlist = [float(x) for x in numlist]
 ->Reconstructed Target:
 re.findall('http://[^t][^s"]+\\.html', document)
 ->Reconstructed Predication:
-re.findall('^([^.]+).+', document)
+re.findall('^([^.]+\\.[^.]+$)', document)
 ->Raw Input:
 implement: match urls whose domain doesn't start with `t` from string `document` using regex
 ->Raw Target:
@@ -7307,7 +7311,7 @@ newFile.write(struct.pack('5B', *newFileBytes))
 ->Reconstructed Target:
 a[:, (np.newaxis)]
 ->Reconstructed Predication:
-a.set_index(axis)
+a.set_index(np.arange(len(a)) + 1)
 ->Raw Input:
 implement: add a new axis to array `a`
 ->Raw Target:

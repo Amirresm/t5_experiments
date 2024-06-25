@@ -1,0 +1,14 @@
+tqdm
+fire
+numpy
+accelerate
+datasets
+sentencepiece
+protobuf
+rouge-score
+nltk
+py7zr
+torch
+evaluate
+transformers
+adapters

@@ -8,6 +8,7 @@ pip install --no-index --upgrade pip
 #pip install --upgrade pip
 pip install --no-index numpy==1.23.5
 pip install --no-index -r requirements.txt
+pip install --no-index bitsandbytes
 #pip install -r requirements.txt
 pip install --no-deps /home/amirresm/files/research/summarization/adapters-0.1.2-py3-none-any.whl
 # pip install --no-deps /home/amirresm/files/research/summarization/codebleu-0.6.1.tar.gz
@@ -16,6 +17,8 @@ mkdir -p "$output_path"
 mkdir -p "$logging_path"
 touch "${output_path}/memuse.txt"
 touch "$output_path/job_report.log"
+
+printenv > "${output_path}/env_vars.txt"
 
 "${prog_root}/checkmem.sh" $memcheck_interval "${output_path}/memuse.txt" &
 
@@ -52,8 +55,16 @@ python3 "$script_path" \
 	--logging_steps "$logging_steps" \
 	--logging_dir "$logging_path" \
     --save_total_limit "$save_total_limit" \
+	--remove_unused_columns "$remove_unused_columns" \
+	--num_beams "$num_beams" \
+	--max_new_tokens "$max_new_tokens" \
+	--metric_for_best_model "$metric_for_best_model" \
+	--label_names "$label_names" \
+	--patience "$patience" \
+	--load_best_model_at_end "$load_best_model_at_end" \
     --metric_path "$bleu_path" \
     --metric_path_alt "$rouge_path" \
+	--quantization_mode "$quantization_mode" \
     --train_adapter "$train_adapter" \
     --adapter_config "$adapter_config" \
     --adapter_path "$adapter_path" \
