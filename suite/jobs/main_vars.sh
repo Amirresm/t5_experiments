@@ -29,6 +29,7 @@ export patience=100000
 export load_best_model_at_end=0
 export label_names=""
 export max_new_tokens=""
+export report_to="tensorboard"
 
 export memcheck_interval=180
 

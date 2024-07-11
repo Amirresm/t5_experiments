@@ -28,6 +28,20 @@ elif [[ "$dataset_name" == "spp_450k" ]]; then
 	export train_file="${dataset_path}/SPP_450k_unverified.jsonl"
 	export eval_file="SPLIT0.001"
 	export test_file="SPLIT0.10"
+elif [[ "$dataset_name" == "spp_30k" ]]; then
+	export source_prefix="summarize: "
+	export text_column="code"
+	export summary_column="NONE"
+	export text_tokenized=0
+	export summary_tokenized=0
+
+	export do_train=1
+	export do_eval=0
+	export do_predict=1
+
+	export train_file="${dataset_path}/SPP_30k_verified.jsonl"
+	export eval_file="SPLIT0.01"
+	export test_file="SPLIT0.05"
 elif [[ "$dataset_name" == "csn" ]]; then
 	export source_prefix="summarize: "
 	export text_column="code_tokens"

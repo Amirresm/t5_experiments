@@ -1,0 +1,210 @@
+1=========
+->Original Input:
+s
+->Original Target:
+s
+->Reconstructed Target:
+<
+->Reconstructed Predication:
+<INSTRUCTION> send a signal `signal.SIGUSR1` to the current process <END INSTRUCTION> <RESPONSE>send the current process a signal 1 <END RESPONSE> <RESPON
+->Raw Input:
+<INSTRUCTION> send a signal `signal.SIGUSR1` to the current process <END INSTRUCTION> <RESPONSE> os.kill(os.getpid(), signal.SIGUSR1) <END RESPONSE>
+->Raw Target:
+<
+--
+
+2=========
+->Original Input:
+o
+->Original Target:
+o
+->Reconstructed Target:
+<
+->Reconstructed Predication:
+<INSTRUCTION> decode a hex string '4a4b4c' to UTF-8. <END INSTRUCTION> <RESPONSE> decode a hex string '4a4b4c' to UTF-8 <END RES
+->Raw Input:
+<INSTRUCTION> decode a hex string '4a4b4c' to UTF-8. <END INSTRUCTION> <RESPONSE> bytes.fromhex('4a4b4c').decode('utf-8') <END RESPONSE>
+->Raw Target:
+<
+--
+
+3=========
+->Original Input:
+u
+->Original Target:
+u
+->Reconstructed Target:
+<
+->Reconstructed Predication:
+<INSTRUCTION> check if all elements in list `myList` are identical <END INSTRUCTION> <RESPONSE> convert to string if it is true <RESPONSE> <END RESPONSE
+->Raw Input:
+<INSTRUCTION> check if all elements in list `myList` are identical <END INSTRUCTION> <RESPONSE> all(x == myList[0] for x in myList) <END RESPONSE>
+->Raw Target:
+<
+--
+
+4=========
+->Original Input:
+r
+->Original Target:
+r
+->Reconstructed Target:
+n
+->Reconstructed Predication:
+<INSTRUCTION> format number of spaces between strings `Python`, `:` and `Very Good` to be `20` <END INSTRUCTION> <RESPONSE> format strings with separator `:` <RESPONSE> <INSTRUCTION> <RE
+->Raw Input:
+<INSTRUCTION> format number of spaces between strings `Python`, `:` and `Very Good` to be `20` <END INSTRUCTION> <RESPONSE> print('%*s : %*s' % (20, 'Python', 20, 'Very Good')) <END RESPONSE>
+->Raw Target:
+n
+--
+
+5=========
+->Original Input:
+c
+->Original Target:
+c
+->Reconstructed Target:
+o
+->Reconstructed Predication:
+<INSTRUCTION> None <END INSTRUCTION> <RESPONSE> None <RESPONSE> <END RESPONSE>
+<IMAGE> None
+->Raw Input:
+<INSTRUCTION> None <END INSTRUCTION> <RESPONSE> d.decode('cp1251').encode('utf8') <END RESPONSE>
+->Raw Target:
+o
+--
+
+6=========
+->Original Input:
+e
+->Original Target:
+e
+->Reconstructed Target:
+l
+->Reconstructed Predication:
+<INSTRUCTION> get rid of None values in dictionary `kwargs` <END INSTRUCTION> <RESPONSE> get rid of None values in dictionary `kwargs` <END RESPONSE> <RE
+->Raw Input:
+<INSTRUCTION> get rid of None values in dictionary `kwargs` <END INSTRUCTION> <RESPONSE> res = {k: v for k, v in list(kwargs.items()) if v is not None} <END RESPONSE>
+->Raw Target:
+r
+--
+
+7=========
+->Original Input:
+[
+->Original Target:
+[
+->Reconstructed Target:
+a
+->Reconstructed Predication:
+<INSTRUCTION> get rid of None values in dictionary `kwargs` <END INSTRUCTION> <RESPONSE> get rid of None values in dictionary `kwargs` <END RESPONSE> <RE
+->Raw Input:
+<INSTRUCTION> get rid of None values in dictionary `kwargs` <END INSTRUCTION> <RESPONSE> res = dict((k, v) for k, v in kwargs.items() if v is not None) <END RESPONSE>
+->Raw Target:
+a
+--
+
+8=========
+->Original Input:
+d
+->Original Target:
+d
+->Reconstructed Target:
+b
+->Reconstructed Predication:
+<INSTRUCTION> capture final output of a chain of system commands `ps -ef | grep something | wc -l` <END INSTRUCTION> <RESPONSE>execute a chain of system commands and get the final output as a string <RESPONSE>
+->Raw Input:
+<INSTRUCTION> capture final output of a chain of system commands `ps -ef | grep something | wc -l` <END INSTRUCTION> <RESPONSE> subprocess.check_output('ps -ef | grep something | wc -l', shell=True) <END RESPONSE>
+->Raw Target:
+w
+--
+
+9=========
+->Original Input:
+a
+->Original Target:
+a
+->Reconstructed Target:
+e
+->Reconstructed Predication:
+<INSTRUCTION> concatenate a list of strings `['a', 'b', 'c']` <END INSTRUCTION> <RESPONSE> convert a list of strings to a string <RESPONSE> <END RESPONSE
+->Raw Input:
+<INSTRUCTION> concatenate a list of strings `['a', 'b', 'c']` <END INSTRUCTION> <RESPONSE> """""".join(['a', 'b', 'c']) <END RESPONSE>
+->Raw Target:
+l
+--
+
+10=========
+->Original Input:
+t
+->Original Target:
+t
+->Reconstructed Target:
+l
+->Reconstructed Predication:
+<INSTRUCTION> find intersection data between series `s1` and series `s2` <END INSTRUCTION> <RESPONSE> move first 50 elements of series `s1` to the end of the series <END
+->Raw Input:
+<INSTRUCTION> find intersection data between series `s1` and series `s2` <END INSTRUCTION> <RESPONSE> pd.Series(list(set(s1).intersection(set(s2)))) <END RESPONSE>
+->Raw Target:
+a
+--
+
+11=========
+->Original Input:
+a
+->Original Target:
+a
+->Reconstructed Target:
+s
+->Reconstructed Predication:
+<INSTRUCTION> sending http headers to `client` <END INSTRUCTION> <RESPONSE> set http header 'Refresh' to '100' <END RESPONSE>
+->Raw Input:
+<INSTRUCTION> sending http headers to `client` <END INSTRUCTION> <RESPONSE> client.send('HTTP/1.0 200 OK\r\n') <END RESPONSE>
+->Raw Target:
+b
+--
+
+12=========
+->Original Input:
+_
+->Original Target:
+_
+->Reconstructed Target:
+>
+->Reconstructed Predication:
+<INSTRUCTION> Format a datetime string `when` to extract date only <END INSTRUCTION> <RESPONSE> Convert datetime to date only <RESPONSE> <INSTRUCTION> <END R
+->Raw Input:
+<INSTRUCTION> Format a datetime string `when` to extract date only <END INSTRUCTION> <RESPONSE> then = datetime.datetime.strptime(when, '%Y-%m-%d').date() <END RESPONSE>
+->Raw Target:
+e
+--
+
+13=========
+->Original Input:
+a
+->Original Target:
+a
+->Reconstructed Target:
+>
+->Reconstructed Predication:
+<INSTRUCTION> split a multi-line string `inputString` into separate strings <END INSTRUCTION> <RESPONSE> split a multiline string `inputString` into strings <END RESPONSE>
+->Raw Input:
+<INSTRUCTION> split a multi-line string `inputString` into separate strings <END INSTRUCTION> <RESPONSE> inputString.split('\n') <END RESPONSE>
+->Raw Target:
+l
+--
+
+14=========
+->Original Input:
+r
+->Original Target:
+r
+->Reconstructed Target:
+>
+->Reconstructed Predication:
+<INSTRUCTION> Split a multi-line string ` a \n b \r\n c ` by new line character `\n` <END INSTRUCTION> <RESPONSE> 'c' <END RESPONSE> ) <RESPONSE> 0
+->Raw Input:
+<INSTRUCTION> Split a multi-line string ` a \n b \r\n c ` by new line character `\n` <END INSTRUCTION> <RESPONSE> ' a \n b \r\n c '.split('\n') <END RESPONSE>
+->Raw Target:
+s
+--

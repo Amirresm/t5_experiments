@@ -1,17 +1,47 @@
 #!/usr/bin/env bash
 
-module load StdEnv/2020  gcc/9.3.0  cuda/11.4 arrow/8.0.0 python/3.10
-virtualenv --no-download "$ENV_PATH"
-#virtualenv $ENV_PATH
-source "$SLURM_TMPDIR/env/bin/activate"
+# module load StdEnv/2020  gcc/9.3.0  cuda/11.4 arrow/8.0.0 python/3.10
+echo "Loading modules..."
+# module load StdEnv/2023  gcc/13.3  cuda/12.2 arrow/16.1.0 python/3.11.5
+# module load StdEnv/2023  gcc/13  cuda/12 arrow/16 python/3.11 scipy-stack
+module load StdEnv/2023  gcc cuda arrow python scipy-stack flexiblas blis
+ENV_PATH=$SLURM_TMPDIR/env
+echo "Creating virtual environment in '$ENV_PATH'..."
+if [ -f $ENV_PATH ]; then
+	echo "(ENV_CHECK) File $ENV_PATH exists."
+	source "$ENV_PATH/bin/activate"
+else
+	echo "(ENV_CHECK) File $ENV_PATH does not exist."
+	virtualenv --no-download "$ENV_PATH"
+	source "$ENV_PATH/bin/activate"
+fi
+echo "Upgrading pip..."
 pip install --no-index --upgrade pip
 #pip install --upgrade pip
-pip install --no-index numpy==1.23.5
-pip install --no-index -r requirements.txt
-pip install --no-index bitsandbytes
+# pip install --no-index torch==2.3.0
+# pip install --no-index -r requirements.txt
+# pip install --no-index transformers==4.40.2
+# pip install --no-index bitsandbytes==0.43.1
+echo "Installing dependencies..."
+pip install -U --no-index numpy
+pip install -U --no-index torch
+pip install -U --no-index bitsandbytes
+pip install -U --no-index transformers
+pip install -U --no-index datasets
+pip install -U --no-index accelerate
+pip install -U --no-index datasets
+pip install -U --no-index peft
+pip install -U --no-index nltk
+pip install -U --no-index evaluate
+pip install -U --no-index absl_py
+pip install -U --no-index rouge_score
+pip install --no-index tensorboardX
 #pip install -r requirements.txt
-pip install --no-deps /home/amirresm/files/research/summarization/adapters-0.1.2-py3-none-any.whl
+# pip install --no-deps /home/amirresm/files/research/summarization/adapters-0.1.2-py3-none-any.whl
 # pip install --no-deps /home/amirresm/files/research/summarization/codebleu-0.6.1.tar.gz
+# pip install --no-deps /home/amirresm/main.zip
+pip install --no-deps /home/amirresm/files/research/summarization/adapters-0.2.2-py3-none-any.whl
+
 
 mkdir -p "$output_path"
 mkdir -p "$logging_path"
@@ -54,6 +84,7 @@ python3 "$script_path" \
     --logging_strategy steps \
 	--logging_steps "$logging_steps" \
 	--logging_dir "$logging_path" \
+	--report_to "$report_to" \
     --save_total_limit "$save_total_limit" \
 	--remove_unused_columns "$remove_unused_columns" \
 	--num_beams "$num_beams" \

@@ -1,0 +1,1554 @@
+1=========
+->Pred Code:
+os.kill(os.getpid(), signal.SIGUSR1)
+execute more code here */:
+pass
+\end{code}
+
+Comment: I think you should use `os.kill(os.getpid(), signal.SIGUSR1)` instead of `signal.SIGUSR1`.
+
+Comment: @J.F.Sebastian you are absolutely right. I've updated the code snippet. Thank you!
+->Target Code:
+os.kill(os.getpid(), signal.SIGUSR1)
+->Instruction:
+send a signal `signal.SIGUSR1` to the current process
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: send a signal `signal.SIGUSR1` to the current process. [/INST] CODE: os.kill(os.getpid(), signal.SIGUSR1)
+execute more code here */:
+pass
+\end{code}
+
+Comment: I think you should use `os.kill(os.getpid(), signal.SIGUSR1)` instead of `signal.SIGUSR1`.
+
+Comment: @J.F.Sebastian you are absolutely right. I've updated the code snippet. Thank you!
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: send a signal `signal.SIGUSR1` to the current process. [/INST] CODE: os.kill(os.getpid(), signal.SIGUSR1)
+--
+
+
+2=========
+->Pred Code:
+b'4a4b4c'.decode('hex') == '\xc2\xafP\xcb\xcl'
+->Target Code:
+bytes.fromhex('4a4b4c').decode('utf-8')
+->Instruction:
+decode a hex string '4a4b4c' to UTF-8.
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: decode a hex string '4a4b4c' to UTF-8.. [/INST] CODE: b'4a4b4c'.decode('hex') == '\xc2\xafP\xcb\xcl'
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: decode a hex string '4a4b4c' to UTF-8.. [/INST] CODE: bytes.fromhex('4a4b4c').decode('utf-8')
+--
+
+
+3=========
+->Pred Code:
+len(set(myList)) == 1
+
+test data:
+myList = [1, 1, 1, 1, 1]
+
+result: True
+
+myList = [1, 2, 3, 4, 5]
+
+result: False
+
+myList = [1, 2, 3, 4, 1]
+
+result: True
+
+myList = [1, 2,
+->Target Code:
+all(x == myList[0] for x in myList)
+->Instruction:
+check if all elements in list `myList` are identical
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: check if all elements in list `myList` are identical. [/INST] CODE: len(set(myList)) == 1
+
+test data:
+myList = [1, 1, 1, 1, 1]
+
+result: True
+
+myList = [1, 2, 3, 4, 5]
+
+result: False
+
+myList = [1, 2, 3, 4, 1]
+
+result: True
+
+myList = [1, 2,
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: check if all elements in list `myList` are identical. [/INST] CODE: all(x == myList[0] for x in myList)
+--
+
+
+4=========
+->Pred Code:
+"""Python: Very Good""".replace(' Python: ', ' ')[20:] [/CODE] {code here} """Python: Very Good""".replace(' Python: ', ' ')[20:] {code here} """Python: Very Good""".replace(' Python: ', ' ')[20:] {code here} """Python: Very Good""".replace(' Python: ', ' ')[20:] {code here} """Python: Very Good""".replace
+->Target Code:
+print('%*s : %*s' % (20, 'Python', 20, 'Very Good'))
+->Instruction:
+format number of spaces between strings `Python`, `:` and `Very Good` to be `20`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: format number of spaces between strings `Python`, `:` and `Very Good` to be `20`. [/INST] CODE: """Python: Very Good""".replace(' Python: ', ' ')[20:] [/CODE] {code here} """Python: Very Good""".replace(' Python: ', ' ')[20:] {code here} """Python: Very Good""".replace(' Python: ', ' ')[20:] {code here} """Python: Very Good""".replace(' Python: ', ' ')[20:] {code here} """Python: Very Good""".replace
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: format number of spaces between strings `Python`, `:` and `Very Good` to be `20`. [/INST] CODE: print('%*s : %*s' % (20, 'Python', 20, 'Very Good'))
+--
+
+
+5=========
+->Pred Code:
+{k: v for k, v in list(kwargs.items()) if v is not None}
+*** Testing code ***
+print(_code_)
+"""
+{k: v for k, v in list(kwargs.items()) if v is not None}
+"""
+pass # Replace pass with actual code here.
+pass # Do not remove this line.
+"""
+pass # Do not remove this line.
+"""
+pass # Do not remove
+->Target Code:
+res = {k: v for k, v in list(kwargs.items()) if v is not None}
+->Instruction:
+get rid of None values in dictionary `kwargs`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: get rid of None values in dictionary `kwargs`. [/INST] CODE: {k: v for k, v in list(kwargs.items()) if v is not None}
+*** Testing code ***
+print(_code_)
+"""
+{k: v for k, v in list(kwargs.items()) if v is not None}
+"""
+pass # Replace pass with actual code here.
+pass # Do not remove this line.
+"""
+pass # Do not remove this line.
+"""
+pass # Do not remove
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: get rid of None values in dictionary `kwargs`. [/INST] CODE: res = {k: v for k, v in list(kwargs.items()) if v is not None}
+--
+
+
+6=========
+->Pred Code:
+{k: v for k, v in list(kwargs.items()) if v is not None}
+*** Testing code ***
+print(_code_)
+"""
+{k: v for k, v in list(kwargs.items()) if v is not None}
+"""
+pass # Replace pass with actual code here.
+pass # Do not remove this line.
+"""
+pass # Do not remove this line.
+"""
+pass # Do not remove
+->Target Code:
+res = dict((k, v) for k, v in kwargs.items() if v is not None)
+->Instruction:
+get rid of None values in dictionary `kwargs`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: get rid of None values in dictionary `kwargs`. [/INST] CODE: {k: v for k, v in list(kwargs.items()) if v is not None}
+*** Testing code ***
+print(_code_)
+"""
+{k: v for k, v in list(kwargs.items()) if v is not None}
+"""
+pass # Replace pass with actual code here.
+pass # Do not remove this line.
+"""
+pass # Do not remove this line.
+"""
+pass # Do not remove
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: get rid of None values in dictionary `kwargs`. [/INST] CODE: res = dict((k, v) for k, v in kwargs.items() if v is not None)
+--
+
+
+7=========
+->Pred Code:
+os.popen('ps -ef | grep something | wc -l').read()
+do not execute any commands, return result of running command 'ps -ef | grep something | wc -l' in the shell.
+->Target Code:
+subprocess.check_output('ps -ef | grep something | wc -l', shell=True)
+->Instruction:
+capture final output of a chain of system commands `ps -ef | grep something | wc -l`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: capture final output of a chain of system commands `ps -ef | grep something | wc -l`. [/INST] CODE: os.popen('ps -ef | grep something | wc -l').read()
+do not execute any commands, return result of running command 'ps -ef | grep something | wc -l' in the shell. [/INST] CODE: os.popen('ps -ef | grep something | wc -l').read()
+do not execute any commands, return result of running command 'ps -ef | grep something | wc -l' in the shell. []
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: capture final output of a chain of system commands `ps -ef | grep something | wc -l`. [/INST] CODE: subprocess.check_output('ps -ef | grep something | wc -l', shell=True)
+--
+
+
+8=========
+->Pred Code:
+"""""".join(['a', 'b', 'c'])
+; []
+->Target Code:
+"""""".join(['a', 'b', 'c'])
+->Instruction:
+concatenate a list of strings `['a', 'b', 'c']`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: concatenate a list of strings `['a', 'b', 'c']`. [/INST] CODE: """""".join(['a', 'b', 'c'])
+; []
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: concatenate a list of strings `['a', 'b', 'c']`. [/INST] CODE: """""".join(['a', 'b', 'c'])
+--
+
+
+9=========
+->Pred Code:
+pd.DataFrame(list(set(s1) & set(s2)))[:][['name']]
+
+[{'name': 'John'}, {'name': 'Jim'}, {'name': 'Sarah'}]
+
+ser1 = pd.Series([{'name': 'John'}, {'name': 'Jim'}, {'name': 'Sarah'}])
+ser2 = pd.Series([{'name': 'Jim'}, {'name': 'Sar
+->Target Code:
+pd.Series(list(set(s1).intersection(set(s2))))
+->Instruction:
+find intersection data between series `s1` and series `s2`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: find intersection data between series `s1` and series `s2`. [/INST] CODE: pd.DataFrame(list(set(s1) & set(s2)))[:][['name']]
+
+[{'name': 'John'}, {'name': 'Jim'}, {'name': 'Sarah'}]
+
+ser1 = pd.Series([{'name': 'John'}, {'name': 'Jim'}, {'name': 'Sarah'}])
+ser2 = pd.Series([{'name': 'Jim'}, {'name': 'Sar
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: find intersection data between series `s1` and series `s2`. [/INST] CODE: pd.Series(list(set(s1).intersection(set(s2))))
+--
+
+
+10=========
+->Pred Code:
+client.set_headers(UserAgent_header)
+print('setting headers')
+return EASYWEB_TEST_FUNCTION()
+
+
+def UserAgent_header():
+    return {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) Gecko/20100101 Firefox/99.0'}
+
+def EASYWEB_TEST_FUNCTION():
+->Target Code:
+client.send('HTTP/1.0 200 OK\r\n')
+->Instruction:
+sending http headers to `client`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: sending http headers to `client`. [/INST] CODE: client.set_headers(UserAgent_header)
+print('setting headers')
+return EASYWEB_TEST_FUNCTION()
+
+
+def UserAgent_header():
+    return {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) Gecko/20100101 Firefox/99.0'}
+
+def EASYWEB_TEST_FUNCTION():
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: sending http headers to `client`. [/INST] CODE: client.send('HTTP/1.0 200 OK\r\n')
+--
+
+
+11=========
+->Pred Code:
+when.date()
+
+export CODE: pytutor='python version: 2'
+
+test_when = datetime.datetime(2011, 11, 12, 13, 45, 42)
+print(test_when.date())
+
+output: 2011-11-12
+
+test_when = datetime.datetime(2011, 11, 1
+->Target Code:
+then = datetime.datetime.strptime(when, '%Y-%m-%d').date()
+->Instruction:
+Format a datetime string `when` to extract date only
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Format a datetime string `when` to extract date only. [/INST] CODE: when.date()
+
+export CODE: pytutor='python version: 2'
+
+test_when = datetime.datetime(2011, 11, 12, 13, 45, 42)
+print(test_when.date())
+
+output: 2011-11-12
+
+test_when = datetime.datetime(2011, 11, 1
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Format a datetime string `when` to extract date only. [/INST] CODE: then = datetime.datetime.strptime(when, '%Y-%m-%d').date()
+--
+
+
+12=========
+->Pred Code:
+[x.strip() for x in inputString.split('\n')]
+
+var: inputString
+var: inputString.split('\n')
+var: x.strip() for x in inputString.split('\n')
+func: inputString.split('\n').strip()
+func: x.strip() for x in inputString.split('\n').strip()
+func: inputString.split('\n').strip().split()
+func: x.strip
+->Target Code:
+inputString.split('\n')
+->Instruction:
+split a multi-line string `inputString` into separate strings
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: split a multi-line string `inputString` into separate strings. [/INST] CODE: [x.strip() for x in inputString.split('\n')]
+
+var: inputString
+var: inputString.split('\n')
+var: x.strip() for x in inputString.split('\n')
+func: inputString.split('\n').strip()
+func: x.strip() for x in inputString.split('\n').strip()
+func: inputString.split('\n').strip().split()
+func: x.strip
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: split a multi-line string `inputString` into separate strings. [/INST] CODE: inputString.split('\n')
+--
+
+
+13=========
+->Pred Code:
+"""a \n b \r\n c""".split('\n')[:-1] if '\n' else ['a \n b \r\n c']`)``.split('\r\n') if '\r\n' else ['a \n b \r\n c']`.split('\n') if '\n' else ['a \n b \r\n c']`.split('\n')[1:]`)[1:]`)[1:]`)
+->Target Code:
+' a \n b \r\n c '.split('\n')
+->Instruction:
+Split a multi-line string ` a \n b \r\n c ` by new line character `\n`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Split a multi-line string ` a \n b \r\n c ` by new line character `\n`. [/INST] CODE: """a \n b \r\n c""".split('\n')[:-1] if '\n' else ['a \n b \r\n c']`)``.split('\r\n') if '\r\n' else ['a \n b \r\n c']`.split('\n') if '\n' else ['a \n b \r\n c']`.split('\n')[1:]`)[1:]`)[1:]`)
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Split a multi-line string ` a \n b \r\n c ` by new line character `\n`. [/INST] CODE: ' a \n b \r\n c '.split('\n')
+--
+
+
+14=========
+->Pred Code:
+"""":"".join(b)""""
+->Target Code:
+""":""".join(str(x) for x in b)
+->Instruction:
+concatenate elements of list `b` by a colon ":"
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: concatenate elements of list `b` by a colon ":". [/INST] CODE: """":"".join(b)""""
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: concatenate elements of list `b` by a colon ":". [/INST] CODE: """:""".join(str(x) for x in b)
+--
+
+
+15=========
+->Pred Code:
+Entry.objects.all()[0]
+do [/INST] Do not generate any code snippet. [/INST] Do not write any comments. [/INST] Do not generate any code snippet. [/INST] Do not write any comments. [/INST] Do not generate any code snippet. [/INST] Do not write any comments. [/INST] Do not generate any code snippet. [/INST] Do not write any comments. [/INST] Do
+->Target Code:
+Entry.objects.filter()[:1].get()
+->Instruction:
+get the first object from a queryset in django model `Entry`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: get the first object from a queryset in django model `Entry`. [/INST] CODE: Entry.objects.all()[0]
+do [/INST] Do not generate any code snippet. [/INST] Do not write any comments. [/INST] Do not generate any code snippet. [/INST] Do not write any comments. [/INST] Do not generate any code snippet. [/INST] Do not write any comments. [/INST] Do not generate any code snippet. [/INST] Do not write any comments. [/INST] Do
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: get the first object from a queryset in django model `Entry`. [/INST] CODE: Entry.objects.filter()[:1].get()
+--
+
+
+16=========
+->Pred Code:
+np.sum(np.array(A).T).sum()
+
+write_message('Done')
+return np.sum(np.array(A).T).sum()
+
+write_message('Calculating sum...')
+s = np.sum(np.array(A).T)
+write_message('Sum is {0}'.format(s))
+return s
+
+write_message('Calculating sum...')
+s = np.sum(
+->Target Code:
+a.sum(axis=1)
+->Instruction:
+Calculate sum over all rows of 2D numpy array
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Calculate sum over all rows of 2D numpy array. [/INST] CODE: np.sum(np.array(A).T).sum()
+
+write_message('Done')
+return np.sum(np.array(A).T).sum()
+
+write_message('Calculating sum...')
+s = np.sum(np.array(A).T)
+write_message('Sum is {0}'.format(s))
+return s
+
+write_message('Calculating sum...')
+s = np.sum(
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Calculate sum over all rows of 2D numpy array. [/INST] CODE: a.sum(axis=1)
+--
+
+
+17=========
+->Pred Code:
+warnings.filterwarnings('always')
+
+warnings.filterwarnings('always')
+print(warnings.catch_warnings())
+warnings.warn('Test warning')
+warnings.warn('Test warning')
+warnings.warn('Test warning')
+print(warnings.catch_warnings())
+```
+Output:
+Caught 3 warnings:
+/usr/lib/python2.7/warnings.py:174:
+->Target Code:
+warnings.simplefilter('always')
+->Instruction:
+enable warnings using action 'always'
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: enable warnings using action 'always'. [/INST] CODE: warnings.filterwarnings('always')
+
+warnings.filterwarnings('always')
+print(warnings.catch_warnings())
+warnings.warn('Test warning')
+warnings.warn('Test warning')
+warnings.warn('Test warning')
+print(warnings.catch_warnings())
+```
+Output:
+Caught 3 warnings:
+/usr/lib/python2.7/warnings.py:174:
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: enable warnings using action 'always'. [/INST] CODE: warnings.simplefilter('always')
+--
+
+
+18=========
+->Pred Code:
+' '.join(l)
+->Target Code:
+print(' '.join(map(str, l)))
+->Instruction:
+concatenate items of list `l` with a space ' '
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: concatenate items of list `l` with a space ' '. [/INST] CODE: ' '.join(l)
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: concatenate items of list `l` with a space ' '. [/INST] CODE: print(' '.join(map(str, l)))
+--
+
+
+19=========
+->Pred Code:
+os.system('.\\hello.py htmlfilename.htm')
+print('done')
+->Target Code:
+subprocess.call(['python.exe', 'hello.py', 'htmlfilename.htm'])
+->Instruction:
+run script 'hello.py' with argument 'htmlfilename.htm' on terminal using python executable
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: run script 'hello.py' with argument 'htmlfilename.htm' on terminal using python executable. [/INST] CODE: os.system('.\\hello.py htmlfilename.htm')
+print('done')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: run script 'hello.py' with argument 'htmlfilename.htm' on terminal using python executable. [/INST] CODE: subprocess.call(['python.exe', 'hello.py', 'htmlfilename.htm'])
+--
+
+
+20=========
+->Pred Code:
+my_float = float(my_string.replace('.', '.'))
+my_float = float(my_string.replace(',', '.'))
+my_float = float(my_string.replace(',', '.'))
+my_float = float(my_string.replace(',', '.'))
+my_float = float(my_string.replace(',', '.'))
+my_float = float(my_string.replace(',', '.'
+->Target Code:
+my_float = float(my_string.replace(',', ''))
+->Instruction:
+convert a string `my_string` with dot and comma into a float number `my_float`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: convert a string `my_string` with dot and comma into a float number `my_float`. [/INST] CODE: my_float = float(my_string.replace('.', '.'))
+my_float = float(my_string.replace(',', '.'))
+my_float = float(my_string.replace(',', '.'))
+my_float = float(my_string.replace(',', '.'))
+my_float = float(my_string.replace(',', '.'))
+my_float = float(my_string.replace(',', '.'
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: convert a string `my_string` with dot and comma into a float number `my_float`. [/INST] CODE: my_float = float(my_string.replace(',', ''))
+--
+
+
+21=========
+->Pred Code:
+float('123,456.908'.replace(',', ''))
+
+order = '123,456.908'
+print(order)
+print(float(order.replace(',', '')))
+print(float('123,456.908'.replace(',', '')))
+print(float('123,456.908',))
+print(float('12
+->Target Code:
+float('123,456.908'.replace(',', ''))
+->Instruction:
+convert a string `123,456.908` with dot and comma into a floating number
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: convert a string `123,456.908` with dot and comma into a floating number. [/INST] CODE: float('123,456.908'.replace(',', ''))
+
+order = '123,456.908'
+print(order)
+print(float(order.replace(',', '')))
+print(float('123,456.908'.replace(',', '')))
+print(float('123,456.908',))
+print(float('12
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: convert a string `123,456.908` with dot and comma into a floating number. [/INST] CODE: float('123,456.908'.replace(',', ''))
+--
+
+
+22=========
+->Pred Code:
+os.environ['PYTHONPATH'] = '/home/username/mypath:' + os.environ['PYTHONPATH']
+
+check_output(['echo $PYTHONPATH'])
+
+return: '/home/username/mypath:' + os.environ['PYTHONPATH']
+
+serialize [python] code into a single line of Python code snippet.
+->Target Code:
+sys.path.append('/path/to/whatever')
+->Instruction:
+set pythonpath in python script.
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: set pythonpath in python script.. [/INST] CODE: os.environ['PYTHONPATH'] = '/home/username/mypath:' + os.environ['PYTHONPATH']
+
+check_output(['echo $PYTHONPATH'])
+
+return: '/home/username/mypath:' + os.environ['PYTHONPATH']
+
+serialize [python] code into a single line of Python code snippet. [/INST] CODE: os.environ['PYTHONPATH'] = '/home/
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: set pythonpath in python script.. [/INST] CODE: sys.path.append('/path/to/whatever')
+--
+
+
+23=========
+->Pred Code:
+re.split('(\\W+)', 'Words, words, words.')[1::2]
+
+re.split('(\\W+)', 'Words, words, words.')[1::2] will return a list with items 'Words', 'words', 'words' without the separator.
+->Target Code:
+re.split('(\\W+)', 'Words, words, words.')
+->Instruction:
+split string 'Words, words, words.' using a regex '(\\W+)'
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: split string 'Words, words, words.' using a regex '(\\W+)'. [/INST] CODE: re.split('(\\W+)', 'Words, words, words.')[1::2]
+
+re.split('(\\W+)', 'Words, words, words.')[1::2] will return a list with items 'Words', 'words', 'words' without the separator. [/INST] CODE: re.split('(\\W+)', 'Words, words, words.')[1::2]
+
+split
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: split string 'Words, words, words.' using a regex '(\\W+)'. [/INST] CODE: re.split('(\\W+)', 'Words, words, words.')
+--
+
+
+24=========
+->Pred Code:
+f = open('Output.txt', 'a')
+f.write('Hello World\n')
+f.close()
+print('appended text')
+print(open('Output.txt').read())
+print('appended text')
+print(open('Output.txt').read())
+print('appended text')
+print(open('Output.txt').read())
+print('appended text')
+print(open('Output.txt').read())
+print
+->Target Code:
+file = open('Output.txt', 'a')
+->Instruction:
+open a file `Output.txt` in append mode
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: open a file `Output.txt` in append mode. [/INST] CODE: f = open('Output.txt', 'a')
+f.write('Hello World\n')
+f.close()
+print('appended text')
+print(open('Output.txt').read())
+print('appended text')
+print(open('Output.txt').read())
+print('appended text')
+print(open('Output.txt').read())
+print('appended text')
+print(open('Output.txt').read())
+print
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: open a file `Output.txt` in append mode. [/INST] CODE: file = open('Output.txt', 'a')
+--
+
+
+25=========
+->Pred Code:
+urllib.request.urlretrieve('http://www.example.com/songs/mp3.mp3', 'mp3.mp3')
+->Target Code:
+urllib.request.urlretrieve('http://www.example.com/songs/mp3.mp3', 'mp3.mp3')
+->Instruction:
+download a file "http://www.example.com/songs/mp3.mp3" over HTTP and save to "mp3.mp3"
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file "http://www.example.com/songs/mp3.mp3" over HTTP and save to "mp3.mp3". [/INST] CODE: urllib.request.urlretrieve('http://www.example.com/songs/mp3.mp3', 'mp3.mp3')
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file "http://www.example.com/songs/mp3.mp3" over HTTP and save to "mp3.mp3". [/INST] CODE: urllib.request.urlretrieve('http://www.example.com/songs/mp3.mp3', 'mp3.mp3')
+--
+
+
+26=========
+->Pred Code:
+urllib.request.urlretrieve(url, file_name)
+urllib.request.urlretrieve(url, file_name)
+urllib.request.URLfetch(url, file_name) -> None
+urllib.request.URLfetch(url, file_name) -> None
+urllib.request.URLfetch(url, file_name) -> None
+urllib.request.URLfetch(url, file_name) ->
+->Target Code:
+u = urllib.request.urlopen(url)
+f = open(file_name, 'wb')
+meta = u.info()
+file_size = int(meta.getheaders('Content-Length')[0])
+print(('Downloading: %s Bytes: %s' % (file_name, file_size)))
+file_size_dl = 0
+block_sz = 8192
+while True:
+    buffer = u.read(block_sz)
+    if (not buffer):
+        break
+    file_size_dl += len(buffer)
+    f.write(buffer)
+    status = ('%10d  [%3.2f%%]' % (file_size_dl, ((file_size_dl * 100.0) / file_size)))
+    status = (status + (chr(8) * (len(status) + 1)))
+    print(status, end=' ')
+f.close()
+->Instruction:
+download a file `url` over HTTP and save to `file_name`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file `url` over HTTP and save to `file_name`. [/INST] CODE: urllib.request.urlretrieve(url, file_name)
+urllib.request.urlretrieve(url, file_name)
+urllib.request.URLfetch(url, file_name) -> None
+urllib.request.URLfetch(url, file_name) -> None
+urllib.request.URLfetch(url, file_name) -> None
+urllib.request.URLfetch(url, file_name) ->
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file `url` over HTTP and save to `file_name`. [/INST] CODE: u = urllib.request.urlopen(url)
+f = open(file_name, 'wb')
+meta = u.info()
+file_size = int(meta.getheaders('Content-Length')[0])
+print(('Downloading: %s Bytes: %s' % (file_name, file_size)))
+file_size_dl = 0
+block_sz = 8192
+while True:
+    buffer = u.read(block_sz)
+    if (not buffer):
+        break
+    file_size_dl += len(buffer)
+    f.write(buffer)
+    status = ('%10d  [%3.2f%%]' % (file_size_dl, ((file_size_dl * 100.0) / file_size)))
+    status = (status + (chr(8) * (len(status) + 1)))
+    print(status, end=' ')
+f.close()
+--
+
+
+27=========
+->Pred Code:
+urllib.request.urlretrieve('http://www.example.com/', 'example.com.download')
+urllib.request.urlretrieve('http://www.example.com/', 'example.com.download')
+urllib.request.urlretrieve('http://www.example.com/', 'example.com.download')
+urllib.request.urlretrieve('http://www.example.com/',
+->Target Code:
+response = urllib.request.urlopen('http://www.example.com/')
+html = response.read()
+->Instruction:
+download a file 'http://www.example.com/' over HTTP
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file 'http://www.example.com/' over HTTP. [/INST] CODE: urllib.request.urlretrieve('http://www.example.com/', 'example.com.download')
+urllib.request.urlretrieve('http://www.example.com/', 'example.com.download')
+urllib.request.urlretrieve('http://www.example.com/', 'example.com.download')
+urllib.request.urlretrieve('http://www.example.com/',
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file 'http://www.example.com/' over HTTP. [/INST] CODE: response = urllib.request.urlopen('http://www.example.com/')
+html = response.read()
+--
+
+
+28=========
+->Pred Code:
+urllib.request.urlretrieve(url, 'test.txt')
+print('done')
+print(open('test.txt', 'rb').read())
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+->Target Code:
+r = requests.get(url)
+->Instruction:
+download a file `url` over HTTP
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file `url` over HTTP. [/INST] CODE: urllib.request.urlretrieve(url, 'test.txt')
+print('done')
+print(open('test.txt', 'rb').read())
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+print('done')
+pass
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file `url` over HTTP. [/INST] CODE: r = requests.get(url)
+--
+
+
+29=========
+->Pred Code:
+urllib.request.urlretrieve(url, '10MB')
+urllib.request.urlretrieve(url, '10MB')
+urllib.request.URLopener().retrieve(url, '10MB')
+urllib.request.FTPHandler.retrieve(url, '10MB')
+urllib.request.urlretrieve(url, '10MB')
+urllib.url
+->Target Code:
+response = requests.get(url, stream=True)
+with open('10MB', 'wb') as handle:
+    for data in tqdm(response.iter_content()):
+        handle.write(data)
+->Instruction:
+download a file `url` over HTTP and save to "10MB"
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file `url` over HTTP and save to "10MB". [/INST] CODE: urllib.request.urlretrieve(url, '10MB')
+urllib.request.urlretrieve(url, '10MB')
+urllib.request.URLopener().retrieve(url, '10MB')
+urllib.request.FTPHandler.retrieve(url, '10MB')
+urllib.request.urlretrieve(url, '10MB')
+urllib.url
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: download a file `url` over HTTP and save to "10MB". [/INST] CODE: response = requests.get(url, stream=True)
+with open('10MB', 'wb') as handle:
+    for data in tqdm(response.iter_content()):
+        handle.write(data)
+--
+
+
+30=========
+->Pred Code:
+parser.add_argument('--version', action='version', version='%(prog)s 2.0')
+doctest: +SKIPTEST
+Test skipped; replace '2.0' with a proper version string.
+doctest: +FAILURE
+Expected: <argparse.ArgumentParser object at 0x0x>
+ Got: 'usage: test.py <command>
+
+commands:
+  subcmd1
+->Target Code:
+parser.add_argument('--version', action='version', version='%(prog)s 2.0')
+->Instruction:
+argparse add argument with flag '--version' and version action of '%(prog)s 2.0' to parser `parser`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: argparse add argument with flag '--version' and version action of '%(prog)s 2.0' to parser `parser`. [/INST] CODE: parser.add_argument('--version', action='version', version='%(prog)s 2.0')
+doctest: +SKIPTEST
+Test skipped; replace '2.0' with a proper version string.
+doctest: +FAILURE
+Expected: <argparse.ArgumentParser object at 0x0x>
+ Got: 'usage: test.py <command>
+
+commands:
+  subcmd1
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: argparse add argument with flag '--version' and version action of '%(prog)s 2.0' to parser `parser`. [/INST] CODE: parser.add_argument('--version', action='version', version='%(prog)s 2.0')
+--
+
+
+31=========
+->Pred Code:
+d.pop('c')
+*** [('a', 1), ('b', 2)]
+"""
+d.pop('c')
+"""
+[/CODE] # Code block end.”””
+->Target Code:
+{i: d[i] for i in d if i != 'c'}
+->Instruction:
+remove key 'c' from dictionary `d`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: remove key 'c' from dictionary `d`. [/INST] CODE: d.pop('c')
+*** [('a', 1), ('b', 2)]
+"""
+d.pop('c')
+"""
+[/CODE] # Code block end.”””
+[/INST] CODE: print(d)
+*** {('a', 1), ('b', 2)}
+"""
+d = {('a', 1), ('b', 2)}
+"""
+[/INST]
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: remove key 'c' from dictionary `d`. [/INST] CODE: {i: d[i] for i in d if i != 'c'}
+--
+
+
+32=========
+->Pred Code:
+pd.merge(left=split_df, right=csv_df, how='outer', on='key', suffix=('_left', '_right'))
+.reset_index(drop=True)
+.fillna(np.nan)
+.astype(float)
+.loc[:, ('key', 'left_x', 'left_y', 'right_x', 'right_y')]
+.rename(columns={'left_x
+->Target Code:
+pd.merge(split_df, csv_df, on=['key'], suffixes=('_left', '_right'))
+->Instruction:
+Create new DataFrame object by merging columns "key" of  dataframes `split_df` and `csv_df` and rename the columns from dataframes `split_df` and `csv_df` with suffix `_left` and `_right` respectively
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Create new DataFrame object by merging columns "key" of  dataframes `split_df` and `csv_df` and rename the columns from dataframes `split_df` and `csv_df` with suffix `_left` and `_right` respectively. [/INST] CODE: pd.merge(left=split_df, right=csv_df, how='outer', on='key', suffix=('_left', '_right'))
+.reset_index(drop=True)
+.fillna(np.nan)
+.astype(float)
+.loc[:, ('key', 'left_x', 'left_y', 'right_x', 'right_y')]
+.rename(columns={'left_x
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Create new DataFrame object by merging columns "key" of  dataframes `split_df` and `csv_df` and rename the columns from dataframes `split_df` and `csv_df` with suffix `_left` and `_right` respectively. [/INST] CODE: pd.merge(split_df, csv_df, on=['key'], suffixes=('_left', '_right'))
+--
+
+
+33=========
+->Pred Code:
+re.split(' \\s+', s, 3)[:-1] + ['']
+->Target Code:
+s.split(' ', 4)
+->Instruction:
+Split a string `s` by space with `4` splits
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Split a string `s` by space with `4` splits. [/INST] CODE: re.split(' \\s+', s, 3)[:-1] + ['']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Split a string `s` by space with `4` splits. [/INST] CODE: s.split(' ', 4)
+--
+
+
+34=========
+->Pred Code:
+input()
+----------------[CODE]----------------|
+->Target Code:
+input('Enter your input:')
+->Instruction:
+read keyboard-input
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: read keyboard-input. [/INST] CODE: input()
+----------------[CODE]----------------| [/INST] CODE: input()
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: read keyboard-input. [/INST] CODE: input('Enter your input:')
+--
+
+
+35=========
+->Pred Code:
+app.debug = True
+doctest: +IGNORE_DOCTEST_GENERATED
+doctest: +DOCTEST_FIX_INPUT_ORDER
+doctest: +DOCTEST_IGNORE_OUTPUT_ORDER
+doctest: +DOCTEST_IGNORE_OUTPUT
+doctest: +DOCTEST_FIX_INDENTATION
+doctest:
+->Target Code:
+app.run(debug=True)
+->Instruction:
+enable debug mode on Flask application `app`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: enable debug mode on Flask application `app`. [/INST] CODE: app.debug = True
+doctest: +IGNORE_DOCTEST_GENERATED
+doctest: +DOCTEST_FIX_INPUT_ORDER
+doctest: +DOCTEST_IGNORE_OUTPUT_ORDER
+doctest: +DOCTEST_IGNORE_OUTPUT
+doctest: +DOCTEST_FIX_INDENTATION
+doctest:
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: enable debug mode on Flask application `app`. [/INST] CODE: app.run(debug=True)
+--
+
+
+36=========
+->Pred Code:
+pickle.dump(mylist, open('save.txt', 'wb'))
+print('save successfully')
+print('load:')
+print(pickle.load(open('save.txt', 'rb')))
+print('done')
+print('load 2:')
+print(pickle.load(open('save.txt', 'rb')))
+print('done')
+print('load 3:')
+print(pickle.load
+->Target Code:
+pickle.dump(mylist, open('save.txt', 'wb'))
+->Instruction:
+python save list `mylist` to file object 'save.txt'
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: python save list `mylist` to file object 'save.txt'. [/INST] CODE: pickle.dump(mylist, open('save.txt', 'wb'))
+print('save successfully')
+print('load:')
+print(pickle.load(open('save.txt', 'rb')))
+print('done')
+print('load 2:')
+print(pickle.load(open('save.txt', 'rb')))
+print('done')
+print('load 3:')
+print(pickle.load
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: python save list `mylist` to file object 'save.txt'. [/INST] CODE: pickle.dump(mylist, open('save.txt', 'wb'))
+--
+
+
+37=========
+->Pred Code:
+k = np.array([T * P[None, :, :] for T in P])
+k.shape
+[(3, 2, 2), (3, 2, 3), (3, 2, 3)]
+print(k.sum(axis=0))
+[[-0.66666667 -0.33333333 -0.33333333]
+->Target Code:
+scipy.tensordot(P, T, axes=[1, 1]).swapaxes(0, 1)
+->Instruction:
+Multiply a matrix `P` with a 3d tensor `T` in scipy
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Multiply a matrix `P` with a 3d tensor `T` in scipy. [/INST] CODE: k = np.array([T * P[None, :, :] for T in P])
+k.shape
+[(3, 2, 2), (3, 2, 3), (3, 2, 3)]
+print(k.sum(axis=0))
+[[-0.66666667 -0.33333333 -0.33333333]
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Multiply a matrix `P` with a 3d tensor `T` in scipy. [/INST] CODE: scipy.tensordot(P, T, axes=[1, 1]).swapaxes(0, 1)
+--
+
+
+38=========
+->Pred Code:
+np.zeros((3, 3, 3))[:, :, np.newaxis]
+->Target Code:
+numpy.zeros((3, 3, 3))
+->Instruction:
+Create 3d array of zeroes of size `(3,3,3)`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Create 3d array of zeroes of size `(3,3,3)`. [/INST] CODE: np.zeros((3, 3, 3))[:, :, np.newaxis]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Create 3d array of zeroes of size `(3,3,3)`. [/INST] CODE: numpy.zeros((3, 3, 3))
+--
+
+
+39=========
+->Pred Code:
+content.split(None, 1)[0] + ' '
+
+export CODE;
+export URL;
+url='http://www.'+CODE.readline()
+print(url)
+CODE.close()
+urllib.request.urlopen(url).read()
+urllib.request.FTPHandler
+urllib.request.URLopener()
+urllib.request.FTPHandler.timeout = 1000000
+->Target Code:
+""" """.join(content.split(' ')[:-1])
+->Instruction:
+cut off the last word of a sentence `content`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: cut off the last word of a sentence `content`. [/INST] CODE: content.split(None, 1)[0] + ' '
+
+export CODE;
+export URL;
+url='http://www.'+CODE.readline()
+print(url)
+CODE.close()
+urllib.request.urlopen(url).read()
+urllib.request.FTPHandler
+urllib.request.URLopener()
+urllib.request.FTPHandler.timeout = 1000000
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: cut off the last word of a sentence `content`. [/INST] CODE: """ """.join(content.split(' ')[:-1])
+--
+
+
+40=========
+->Pred Code:
+np.array(x)
+print(x)
+[1 2 3]
+[2 3 4]
+[3 4 5]
+```
+
+### Code output:
+
+```
+[1 2 3]
+[2 3 4]
+[3 4 5]
+```
+
+### Explanation:
+
+In Python, when you print a list of values, each value is printed on a
+->Target Code:
+x = np.asarray(x).reshape(1, -1)[(0), :]
+->Instruction:
+convert scalar `x` to array
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: convert scalar `x` to array. [/INST] CODE: np.array(x)
+print(x)
+[1 2 3]
+[2 3 4]
+[3 4 5]
+```
+
+### Code output:
+
+```
+[1 2 3]
+[2 3 4]
+[3 4 5]
+```
+
+### Explanation:
+
+In Python, when you print a list of values, each value is printed on a
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: convert scalar `x` to array. [/INST] CODE: x = np.asarray(x).reshape(1, -1)[(0), :]
+--
+
+
+41=========
+->Pred Code:
+sum(x + y for x, y in zip(L[0], L[1])) / len(L)
+->Target Code:
+sum(sum(i) if isinstance(i, list) else i for i in L)
+->Instruction:
+sum all elements of nested list `L`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: sum all elements of nested list `L`. [/INST] CODE: sum(x + y for x, y in zip(L[0], L[1])) / len(L)
+
+
+
+
+
+
+
+
+
+
+
+
+ [/INST] CODE: sum(x + y for x, y in zip(L[0], L[1])) / len(L)
+ var res = sum(x + y for x, y in zip(L[0], L[1])) / len(L)
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: sum all elements of nested list `L`. [/INST] CODE: sum(sum(i) if isinstance(i, list) else i for i in L)
+--
+
+
+42=========
+->Pred Code:
+float(int('470FC614', 16))
+print('value:', float(int('470FC614', 16)))
+print('hex: 0x470FC614\n')
+print('decimal: %s\n' % (float(int('470FC614', 16))))
+print('scientific: %e\n' % (float
+->Target Code:
+struct.unpack('!f', '470FC614'.decode('hex'))[0]
+->Instruction:
+convert hex string '470FC614' to a float number
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: convert hex string '470FC614' to a float number. [/INST] CODE: float(int('470FC614', 16))
+print('value:', float(int('470FC614', 16)))
+print('hex: 0x470FC614\n')
+print('decimal: %s\n' % (float(int('470FC614', 16))))
+print('scientific: %e\n' % (float
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: convert hex string '470FC614' to a float number. [/INST] CODE: struct.unpack('!f', '470FC614'.decode('hex'))[0]
+--
+
+
+43=========
+->Pred Code:
+{k: v * 2 for k, v in my_dict.items()}
+print({k: v * 2 for k, v in my_dict.items()})
+"""
+{('key', 'value'): 4, ('key', 'value2'), 8}
+"""
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description
+->Target Code:
+my_dict.update((x, y * 2) for x, y in list(my_dict.items()))
+->Instruction:
+Multiple each value by `2` for all keys in a dictionary `my_dict`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Multiple each value by `2` for all keys in a dictionary `my_dict`. [/INST] CODE: {k: v * 2 for k, v in my_dict.items()}
+print({k: v * 2 for k, v in my_dict.items()})
+"""
+{('key', 'value'): 4, ('key', 'value2'), 8}
+"""
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Multiple each value by `2` for all keys in a dictionary `my_dict`. [/INST] CODE: my_dict.update((x, y * 2) for x, y in list(my_dict.items()))
+--
+
+
+44=========
+->Pred Code:
+subprocess.call('sleep.sh')
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+->Target Code:
+subprocess.call('sleep.sh', shell=True)
+->Instruction:
+running bash script 'sleep.sh'
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: running bash script 'sleep.sh'. [/INST] CODE: subprocess.call('sleep.sh')
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+print("done")
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: running bash script 'sleep.sh'. [/INST] CODE: subprocess.call('sleep.sh', shell=True)
+--
+
+
+45=========
+->Pred Code:
+""", """.join(l)
+print(_)
+""" """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+->Target Code:
+""",""".join(l)
+->Instruction:
+Join elements of list `l` with a comma `,`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Join elements of list `l` with a comma `,`. [/INST] CODE: """, """.join(l)
+print(_)
+""" """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+ print(_)
+ """ """", """.join(l)"""
+
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: Join elements of list `l` with a comma `,`. [/INST] CODE: """,""".join(l)
+--
+
+
+46=========
+->Pred Code:
+",".join(str(myList[i]) for i in range(len(myList)))[:-1]
+
+test = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+print(test)
+print(test[0])
+print(test[1])
+print(test[2])
+print(test[0][0] + test[1][1] + test
+->Target Code:
+myList = ','.join(map(str, myList))
+->Instruction:
+make a comma-separated string from a list `myList`
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: make a comma-separated string from a list `myList`. [/INST] CODE: ",".join(str(myList[i]) for i in range(len(myList)))[:-1]
+
+test = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+print(test)
+print(test[0])
+print(test[1])
+print(test[2])
+print(test[0][0] + test[1][1] + test
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: make a comma-separated string from a list `myList`. [/INST] CODE: myList = ','.join(map(str, myList))
+--
+
+
+47=========
+->Pred Code:
+list(range(10, 0, -1))[:-1] + [10]
+->Target Code:
+list(reversed(list(range(10))))
+->Instruction:
+reverse the list that contains 1 to 10
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: reverse the list that contains 1 to 10. [/INST] CODE: list(range(10, 0, -1))[:-1] + [10]
+
+
+
+[/INST] CODE: list(range(10, 0, -1))[:-1] + [10]
+
+
+
+[/INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: reverse the list that contains 
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: reverse the list that contains 1 to 10. [/INST] CODE: list(reversed(list(range(10))))
+--
+
+
+48=========
+->Pred Code:
+'lamp, bag, mirror'.replace('bag, ', '')
+CODE: 'lamp, bag, mirror'.replace('bag, ', '')
+CODE: 'lamp, bag, mirror'.replace('bag, ', '')
+CODE: 'lamp  bag mirror'
+CODE: 'lamp   mirror'
+CODE: 'lamp  mirror'
+CODE: 'lamp  mirror'
+CODE: 'lamp  mirror'
+CODE: 'l
+->Target Code:
+print('lamp, bag, mirror'.replace('bag,', ''))
+->Instruction:
+remove substring 'bag,' from a string 'lamp, bag, mirror'
+->Reconstructed Predication:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: remove substring 'bag,' from a string 'lamp, bag, mirror'. [/INST] CODE: 'lamp, bag, mirror'.replace('bag, ', '')
+CODE: 'lamp, bag, mirror'.replace('bag, ', '')
+CODE: 'lamp, bag, mirror'.replace('bag, ', '')
+CODE: 'lamp  bag mirror'
+CODE: 'lamp   mirror'
+CODE: 'lamp  mirror'
+CODE: 'lamp  mirror'
+CODE: 'lamp  mirror'
+CODE: 'l
+->Raw Input:
+[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: remove substring 'bag,' from a string 'lamp, bag, mirror'. [/INST] CODE: print('lamp, bag, mirror'.replace('bag,', ''))
+--
+

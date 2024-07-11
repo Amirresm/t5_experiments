@@ -48,8 +48,9 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name_or_path,
         token=args.token,
-        device_map="auto",  
+        device_map="auto",
         trust_remote_code=True,
+        # use_auth_token=args.token,
         # quantization_config=BitsAndBytesConfig(
         #     load_in_4bit=True,
         #     bnb_4bit_quant_type="nf4",

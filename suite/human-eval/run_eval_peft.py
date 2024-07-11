@@ -6,7 +6,7 @@ import pathlib
 from dataclasses import dataclass, field
 from typing import Optional
 import tqdm
-from codeeval import run_eval, filter_code, fix_indents, standard_t5_prompt
+from codeeval import run_eval, standard_t5_prompt
 
 import datasets
 import nltk  # Here to have a nice missing dependency error message early on
@@ -343,11 +343,30 @@ def ensure_path_exists(path):
 
 
 def create_llama_prompt(input_text):
-    return f"[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nComplete the following Python code without any tests or explanation\n {input_text}. [/INST] CODE:"
+    # return f"[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nComplete the following Python code without any tests or explanation. Stop after one function is completed: [/INST]\n {input_text}"
+    return f"[INST]Complete the Python function without any tests or explanation. Stop after one function is completed. Do not write anything after function is completed:[/INST]\n {input_text}"
 
 
 def extract_code(raw):
-    return raw.split("[/INST] CODE:")[1].strip()
+    return raw.split("[/INST]")[1].strip()
+
+def filter_code(completion: str) -> str:
+    # The program tends to overwrite, we only take the first function
+    completion = completion.lstrip("\n")
+    splits = completion.split("\n\ndef ")
+    if len(splits) == 1:
+        completion = splits[0]
+    if len(splits) == 2:
+        completion = completion
+    if len(splits) > 2:
+        completion = splits[0] + "\n\ndef " + splits[1]
+    splits = completion.split("\n\nif __name__ == '__main__':")
+    return splits[0]
+
+
+def fix_indents(text: str) -> str:
+    return text.replace("\t", "    ")
+
 
 
 @torch.inference_mode()
@@ -360,11 +379,11 @@ def generate_batch_completion(
 
     generated_ids = model.generate(
         **inputs,
-        use_cache=True,
+        # use_cache=True,
         max_new_tokens=256,
-        temperature=0.5,
-        top_p=0.95,
-        do_sample=True,
+        # temperature=0.5,
+        # top_p=0.95,
+        # do_sample=True,
         # eos_token_id=tokenizer.eos_token_id,
         # pad_token_id=tokenizer.pad_token_id,                                                                                                                                                   )
     )
@@ -374,9 +393,11 @@ def generate_batch_completion(
         skip_special_tokens=True,
     )
 
-    return [
-        filter_code(fix_indents(extract_code(completion))) for completion in batch_completions
-    ]
+    res = [filter_code(fix_indents(extract_code(completion))) for completion in batch_completions]
+    logger.info(f"Generated completions prompt:\n {prompt}")
+    logger.info(f"Generated completions raw:\n {batch_completions[0]}")
+    logger.info(f"Generated completions example:\n {res[0]}")
+    return res
 
 
 def main():
@@ -492,7 +513,7 @@ def main():
     # model.to(device)
 
     # Convert the model into an adapter model
-    if adapter_args.train_adapter:
+    if adapter_args.train_adapter or model_args.preload_adapter:
         adapter_name = f"{model_args.config_title}_adapter"
         peft_config = peft.LoraConfig(
             r=32,

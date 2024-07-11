@@ -1,0 +1,10 @@
+{
+    "epoch": 1.0,
+    "peak_memory": 37.95176513671875,
+    "total_gpu_time": 2093.651066666667,
+    "train_loss": 0.3478783699640508,
+    "train_runtime": 125618.5521,
+    "train_samples": 400148,
+    "train_samples_per_second": 3.185,
+    "train_steps_per_second": 0.796
+}
