@@ -1,4 +1,5 @@
 .vscode
 data
 .env
-*test_codebleu/CodeBLEU/parser/*
+__pycache__
+test_codebleu/CodeBLEU/parser
