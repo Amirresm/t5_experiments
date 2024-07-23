@@ -56,6 +56,7 @@ from transformers import (
     DataCollatorForSeq2Seq,
     DataCollatorForLanguageModeling,
     EarlyStoppingCallback,
+    TrainerCallback,
     HfArgumentParser,
     MBart50Tokenizer,
     MBart50TokenizerFast,
@@ -74,6 +75,8 @@ from transformers.utils import check_min_version, is_offline_mode
 from transformers.utils.versions import require_version
 
 from bleu2.calc_bleu2 import calculate_bleu2
+
+from codeeval import run_eval, standard_t5_prompt
 
 has_codebleu = False
 # try:
@@ -407,6 +410,16 @@ class DataTrainingArguments:
         },
     )
 
+    humaneval_num: Optional[int] = field(
+        default=0,
+        metadata={
+            "help": (
+                "Number of humaneval samples (k)"
+            )
+        },
+    )
+
+
     def __post_init__(self):
         if (
             self.dataset_name is None
@@ -466,9 +479,48 @@ def create_llama_prompt(input_text, target_text=None, is_training=False, eos_tok
     if target_text is None:
         # return f"[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: {input_text}. [/INST] CODE:"
         # return f"[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nComplete the following Python code without any tests or explanation: [/INST]\n {input_text}{'</s>' if is_training else ''}"
+        # return f"# Instruction: Complete the following Python code without any tests or calling this function please. Do not define additional functions [END-INST]:\n {input_text}{eos_token if is_training else ''}"
         return f"{input_text}{eos_token if is_training else ''}"
     else:
         return f"[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: {input_text}. [/INST] CODE: {target_text}</s>"
+
+
+def fix_indents(text: str) -> str:
+    return text.replace("\t", "    ")
+
+@torch.inference_mode()
+def generate_batch_completion(
+    model, tokenizer, prompt, batch_size
+) -> list[str]:
+    prompt_input = create_llama_prompt(prompt)
+    input_batch = [prompt_input for _ in range(batch_size)]
+    inputs = tokenizer(input_batch, return_tensors="pt").to(model.device)
+
+    generated_ids = model.generate(
+        **inputs,
+        # use_cache=True,
+        max_new_tokens=200,
+        temperature=1.0,
+        top_k=50,
+        top_p=0.95,
+        do_sample=True,
+        repetition_penalty=1.1,
+        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer.pad_token_id
+    )
+
+    batch_completions = tokenizer.batch_decode(
+        generated_ids,
+        skip_special_tokens=True,
+    )
+
+    # res = [filter_code(fix_indents(extract_code(completion))) for completion in batch_completions]
+    res = [fix_indents(completion) for completion in batch_completions]
+    res = batch_completions
+    logger.info(f"Generated completions prompt:\n {prompt}")
+    # logger.info(f"Generated completions raw:\n {batch_completions[0]}")
+    logger.info(f"Generated completions example:\n {res[0]}")
+    return res
 
 def clean_whitespaces_generations(text):
     trim_list = [' ', '\n']
@@ -727,11 +779,18 @@ def main():
         adapters.init(model)
         adapter_name = f"{model_args.config_title}_adapter"
         config = CompacterConfig(
-                phm_dim=32,
-                phm_rank=16,
+                phm_dim=64,
+                phm_rank=32,
                 mh_adapter=True,
                 output_adapter=True
-        ) if adapter_args.adapter_config == "compacter" else IA3Config() if adapter_args.adapter_config == "ia3" else None
+        ) if adapter_args.adapter_config == "compacter" else IA3Config(
+
+        ) if adapter_args.adapter_config == "ia3" else LoRAConfig(
+            r=64,
+            alpha=32,
+            dropout=0.1,
+            attn_matrices=['q', 'k', 'v']
+        ) if adapter_args.adapter_config == "lora" else None
         # adapter_args.adapter_config = AdapterConfig.load(adapter_args.adapter_config)
         model.add_adapter(adapter_name, config=config)
         model.train_adapter(adapter_name)
@@ -1279,7 +1338,61 @@ def main():
     tokenizer.save_pretrained(model_args.tokenizer_name_or_path)
     logger.info(f"Tokenizer saved to {model_args.tokenizer_name_or_path}")
 
+    class GenerateTextCallback(TrainerCallback):
+        def __init__(self, tokenizer, n_steps=500):
+            self.tokenizer = tokenizer
+            # self.prompt = prompt
+            # self.device = device
+            self.n_steps = n_steps
+            self.step_count = 0
+
+        def on_step_end(self, args: TrainingArguments, state, control, **kwargs):
+            self.step_count += 1
+            if self.step_count % self.n_steps == 0:
+                model = kwargs['model']
+                tokenizer = self.tokenizer
+                prompt = '''def find_max(words):
+        """Write a function that accepts a list of strings.
+        The list contains different words. Return the word with maximum number
+        of unique characters. If multiple strings have maximum number of unique
+        characters, return the one which comes first in lexicographical order.
+
+        find_max(["name", "of", "string"]) == "string"
+        find_max(["name", "enam", "game"]) == "enam"
+        find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa"
+        """
+'''
+                prompt_input = create_llama_prompt(prompt)
+                input_batch = [prompt_input for _ in range(batch_size)]
+                inputs = tokenizer(input_batch, return_tensors="pt").to(model.device)
+
+                generated_ids = model.generate(
+                    **inputs,
+                    # use_cache=True,
+                    max_new_tokens=200,
+                    temperature=1.0,
+                    top_k=50,
+                    top_p=0.95,
+                    do_sample=True,
+                    repetition_penalty=1.1,
+                    eos_token_id=tokenizer.eos_token_id,
+                    pad_token_id=tokenizer.pad_token_id
+                )
+
+                batch_completions = tokenizer.batch_decode(
+                    generated_ids,
+                    skip_special_tokens=True,
+                )
+
+                # res = [filter_code(fix_indents(extract_code(completion))) for completion in batch_completions]
+                res = [fix_indents(completion) for completion in batch_completions]
+                res = batch_completions
+                logger.info(f"Generated completions prompt:\n {prompt}")
+                # logger.info(f"Generated completions raw:\n {batch_completions[0]}")
+                logger.info(f"Generated completions example:\n {res[0]}")
+
     # Initialize our Trainer
+    callback = GenerateTextCallback(tokenizer, n_steps=100)
     trainer = None
     if training_args.do_train: # or training_args.do_eval:
         if adapter_args.train_adapter:
@@ -1300,6 +1413,7 @@ def main():
                 compute_metrics
             ),
             preprocess_logits_for_metrics=preprocess_logits_for_metrics,
+            callbacks=[callback]
         )
         logger.info(f"PREDICT WITH GENERATE {model_args.predict_with_generate}")
         if data_args.patience and data_args.patience > 0:
@@ -1607,6 +1721,20 @@ def main():
                 logger.info(
                     f"{len(pairs)} generations saved to {output_prediction_file}"
                 )
+                num_samples_per_task = data_args.humaneval_num
+                if num_samples_per_task > 0:
+                    out_path = os.path.join(training_args.output_dir, f"humaneval_{num_samples_per_task}")
+                    os.makedirs(out_path, exist_ok=True)
+                    out_path = f"{out_path}/eval.jsonl"
+                    logger.info(f"Running humaneval-{num_samples_per_task}, output to {out_path}")
+                    run_eval(
+                        model,
+                        tokenizer,
+                        num_samples_per_task,
+                        out_path,
+                        generate_batch_completion,
+                        True,
+                    )
 
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "summarization"}
     if data_args.dataset_name is not None:

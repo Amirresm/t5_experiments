@@ -347,7 +347,7 @@ def create_llama_prompt(input_text):
     # return f"[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nComplete the following Python code without any tests or explanation. Stop after one function is completed: [/INST]\n {input_text}"
     # return f"[INST]Complete the Python function without any tests or explanation. Stop after one function is completed. Do not write anything after function is completed:[/INST]\n {input_text}"
     # return f"[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nComplete the following Python code without any tests or explanation: [/INST]\n {input_text}"
-    return input_text
+    return f"{input_text}"
 
 
 def extract_code(raw):
@@ -378,17 +378,19 @@ def generate_batch_completion(
 ) -> list[str]:
     prompt_input = create_llama_prompt(prompt)
     input_batch = [prompt_input for _ in range(batch_size)]
-    inputs = tokenizer(input_batch, return_tensors="pt", padding="max_length", truncation=True).to(model.device)
+    inputs = tokenizer(input_batch, return_tensors="pt").to(model.device)
 
     generated_ids = model.generate(
         **inputs,
         # use_cache=True,
-        max_new_tokens=256,
-        # temperature=0.5,
-        # top_p=0.95,
-        # do_sample=True,
-        # eos_token_id=tokenizer.eos_token_id,
-        # pad_token_id=tokenizer.pad_token_id,                                                                                                                                                   )
+        max_new_tokens=512,
+        temperature=1.0,
+        top_k=50,
+        top_p=1,
+        do_sample=False,
+        repetition_penalty=1.2,
+        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer.pad_token_id
     )
 
     batch_completions = tokenizer.batch_decode(
@@ -397,11 +399,12 @@ def generate_batch_completion(
     )
 
     # res = [filter_code(fix_indents(extract_code(completion))) for completion in batch_completions]
+    res = [fix_indents(completion) for completion in batch_completions]
+    res = batch_completions
     logger.info(f"Generated completions prompt:\n {prompt}")
-    logger.info(f"Generated completions raw:\n {batch_completions[0]}")
-    # logger.info(f"Generated completions example:\n {res[0]}")
-    # return res
-    return batch_completions
+    # logger.info(f"Generated completions raw:\n {batch_completions[0]}")
+    logger.info(f"Generated completions example:\n {res[0]}")
+    return res
 
 
 def main():
@@ -581,6 +584,7 @@ def main():
             and model_args.adapter_path
             and os.path.isdir(model_args.adapter_path)
         ):
+            logger.info("Loading adapter from path")
             model.load_adapter(
                 model_args.adapter_path,
                 load_as=adapter_name,

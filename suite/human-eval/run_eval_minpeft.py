@@ -343,8 +343,8 @@ def ensure_path_exists(path):
 
 
 def create_llama_prompt(input_text):
-    # return f"{input_text}\n"
-    return f"# Instruction: Complete the following Python code without any tests or calling this function please. Do not define additional functions [END-INST]:\n{input_text}\n"
+    return f"{input_text}\n"
+    # return f"# Instruction: Complete the following Python code without any tests or calling this function please. Do not define additional functions [END-INST]:\n{input_text}\n"
 
 
 def extract_code(raw):
@@ -396,6 +396,7 @@ def generate_batch_completion(
     )
 
     # res = [filter_code(fix_indents(extract_code(completion))) for completion in batch_completions]
+    res = [fix_indents(completion) for completion in batch_completions]
     res = batch_completions
     logger.info(f"Generated completions prompt:\n {prompt}")
     # logger.info(f"Generated completions raw:\n {batch_completions[0]}")

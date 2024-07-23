@@ -71,6 +71,8 @@ from transformers.utils.versions import require_version
 
 from bleu2.calc_bleu2 import calculate_bleu2
 
+from codeeval import run_eval, standard_t5_prompt
+
 has_codebleu = False
 # try:
 #     from codebleu import calc_codebleu
@@ -403,6 +405,16 @@ class DataTrainingArguments:
         },
     )
 
+    humaneval_num: Optional[int] = field(
+        default=0,
+        metadata={
+            "help": (
+                "Number of humaneval samples (k)"
+            )
+        },
+    )
+
+
     def __post_init__(self):
         if (
             self.dataset_name is None
@@ -462,10 +474,48 @@ def create_llama_prompt(input_text, target_text=None, is_training=False, eos_tok
     if target_text is None:
         # return f"[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: {input_text}. [/INST] CODE:"
         # return f"[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nComplete the following Python code without any tests or explanation: [/INST]\n {input_text}{'</s>' if is_training else ''}"
-        return f"# Instruction: Complete the following Python code without any tests or calling this function please. Do not define additional functions [END-INST]:\n {input_text}{eos_token if is_training else ''}"
-        # return f"{input_text}{eos_token if is_training else ''}"
+        # return f"# Instruction: Complete the following Python code without any tests or calling this function please. Do not define additional functions [END-INST]:\n {input_text}{eos_token if is_training else ''}"
+        return f"{input_text}{eos_token if is_training else ''}"
     else:
         return f"[INST] Do not define a function. Do not import anything. Do not write any comments. Generate one line of Python code snippet to satisfy the following description: {input_text}. [/INST] CODE: {target_text}</s>"
+
+
+def fix_indents(text: str) -> str:
+    return text.replace("\t", "    ")
+
+@torch.inference_mode()
+def generate_batch_completion(
+    model, tokenizer, prompt, batch_size
+) -> list[str]:
+    prompt_input = create_llama_prompt(prompt)
+    input_batch = [prompt_input for _ in range(batch_size)]
+    inputs = tokenizer(input_batch, return_tensors="pt").to(model.device)
+
+    generated_ids = model.generate(
+        **inputs,
+        # use_cache=True,
+        max_new_tokens=200,
+        temperature=1.0,
+        top_k=50,
+        top_p=0.95,
+        do_sample=True,
+        repetition_penalty=1.1,
+        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer.pad_token_id
+    )
+
+    batch_completions = tokenizer.batch_decode(
+        generated_ids,
+        skip_special_tokens=True,
+    )
+
+    # res = [filter_code(fix_indents(extract_code(completion))) for completion in batch_completions]
+    res = [fix_indents(completion) for completion in batch_completions]
+    res = batch_completions
+    logger.info(f"Generated completions prompt:\n {prompt}")
+    # logger.info(f"Generated completions raw:\n {batch_completions[0]}")
+    logger.info(f"Generated completions example:\n {res[0]}")
+    return res
 
 def clean_whitespaces_generations(text):
     trim_list = [' ', '\n']
@@ -730,7 +780,14 @@ def main():
             # bias="none",
             target_modules=["q_proj", "k_proj", "v_proj"],
             task_type="CAUSAL_LM",
-        ) if adapter_args.adapter_config == "lora" else peft.IA3Config(task_type="CAUSAL_LM") if adapter_args.adapter_config == "ia3" else None
+        ) if adapter_args.adapter_config == "lora" else peft.IA3Config(
+                # r=64,
+                # lora_alpha=32,
+                # lora_dropout=0.1,
+                target_modules=["q_proj", "k_proj", "v_proj", "down_proj"],
+                feedforward_modules=["down_proj"],
+                task_type="CAUSAL_LM"
+        ) if adapter_args.adapter_config == "ia3" else None
         if (
             model_args.preload_adapter
             and adapter_args.train_adapter
@@ -1569,6 +1626,20 @@ def main():
                 logger.info(
                     f"{len(pairs)} generations saved to {output_prediction_file}"
                 )
+                num_samples_per_task = data_args.humaneval_num
+                if num_samples_per_task > 0:
+                    out_path = os.path.join(training_args.output_dir, f"humaneval_{num_samples_per_task}")
+                    os.makedirs(out_path, exist_ok=True)
+                    out_path = f"{out_path}/eval.jsonl"
+                    logger.info(f"Running humaneval-{num_samples_per_task}, output to {out_path}")
+                    run_eval(
+                        model,
+                        tokenizer,
+                        num_samples_per_task,
+                        out_path,
+                        generate_batch_completion,
+                        True,
+                    )
 
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "summarization"}
     if data_args.dataset_name is not None:

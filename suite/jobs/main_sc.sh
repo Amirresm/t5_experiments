@@ -81,6 +81,7 @@ python3 "$script_path" \
     --predict_with_generate \
     --evaluation_strategy steps \
 	--eval_steps "$eval_steps" \
+	--humaneval_num "$humaneval_num" \
     --logging_strategy steps \
 	--logging_steps "$logging_steps" \
 	--logging_dir "$logging_path" \

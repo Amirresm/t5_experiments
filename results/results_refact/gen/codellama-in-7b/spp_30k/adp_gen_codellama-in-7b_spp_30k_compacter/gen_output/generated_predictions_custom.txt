@@ -1,0 +1,706 @@
+1=========
+->Pred Code:
+def length_char(text):
+<sp4>""" Find the length of a given string.
+<sp3>>>> length_char("python")
+<sp3>6
+<sp3>>>> length_char("program")
+<sp3>7
+<sp3>>>> length_char("language")
+<sp3>8
+<sp3>"""
+<sp3>return len(text)
+->Target Code:
+def length_char(text):
+    """ Find the length of a given string.
+    >>> length_char("python")
+    6
+    >>> length_char("program")
+    7
+    >>> length_char("language")
+    8
+    """
+    return len(text)
+
+->Instruction:
+def length_char(text):
+    """ Find the length of a given string.
+    >>> length_char("python")
+    6
+    >>> length_char("program")
+    7
+    >>> length_char("language")
+    8
+    """
+
+->Reconstructed Predication:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def length_char(text):
+<sp4>""" Find the length of a given string.
+<sp3>>>> length_char("python")
+<sp3>6
+<sp3>>>> length_char("program")
+<sp3>7
+<sp3>>>> length_char("language")
+<sp3>8
+<sp3>"""
+<sp3>return len(text)
+->Raw Input:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def length_char(text):
+    """ Find the length of a given string.
+    >>> length_char("python")
+    6
+    >>> length_char("program")
+    7
+    >>> length_char("language")
+    8
+    """
+    return len(text)
+
+--
+
+
+2=========
+->Pred Code:
+def make_tuple_list(test_list):
+<sp4>""" Make a tuple list from the given list of tuples.
+<sp3>Examples:
+<sp3>>>> make_tuple_list([('a','b'), ('c','d')])
+<sp3>[('a', 'b'), ('c', 'd')]
+<sp3>>>> make_tuple_list([(1,2), (3,4), (5,6)])
+<sp3>[(1, 2), (3, 4), (5, 6)]
+<sp3>"""
+<sp3>return test_list
+def make_tuple_list(test_list):
+<sp4>""" Make a tuple list from the given list of tuples.
+<sp3>Examples:
+<sp3>>>> make_tuple_list([('a','b'), ('c','d')])
+<sp3>[('a', 'b'), ('c', 'd')]
+<sp3>>>> make_tuple_list([(1,2), (3,4), (5,6)])
+<sp3>[(1, 2), (3, 4), (5, 6)]
+<sp3>"""
+<sp3>return test_list
+->Target Code:
+def make_tuple_list(test_list):
+    """ Make a tuple list from the given list of tuples.
+    Examples:
+    >>> make_tuple_list([('a','b'), ('c','d')])
+    [('a', 'b'), ('c', 'd')]
+    >>> make_tuple_list([(1,2), (3,4), (5,6)])
+    [(1, 2), (3, 4), (5, 6)]
+    """
+    return list(map(lambda x: tuple(x), test_list))
+
+->Instruction:
+def make_tuple_list(test_list):
+    """ Make a tuple list from the given list of tuples.
+    Examples:
+    >>> make_tuple_list([('a','b'), ('c','d')])
+    [('a', 'b'), ('c', 'd')]
+    >>> make_tuple_list([(1,2), (3,4), (5,6)])
+    [(1, 2), (3, 4), (5, 6)]
+    """
+
+->Reconstructed Predication:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def make_tuple_list(test_list):
+<sp4>""" Make a tuple list from the given list of tuples.
+<sp3>Examples:
+<sp3>>>> make_tuple_list([('a','b'), ('c','d')])
+<sp3>[('a', 'b'), ('c', 'd')]
+<sp3>>>> make_tuple_list([(1,2), (3,4), (5,6)])
+<sp3>[(1, 2), (3, 4), (5, 6)]
+<sp3>"""
+<sp3>return test_list
+def make_tuple_list(test_list):
+<sp4>""" Make a tuple list from the given list of tuples.
+<sp3>Examples:
+<sp3>>>> make_tuple_list([('a','b'), ('c','d')])
+<sp3>[('a', 'b'), ('c', 'd')]
+<sp3>>>> make_tuple_list([(1,2), (3,4), (5,6)])
+<sp3>[(1, 2), (3, 4), (5, 6)]
+<sp3>"""
+<sp3>return test_list
+->Raw Input:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def make_tuple_list(test_list):
+    """ Make a tuple list from the given list of tuples.
+    Examples:
+    >>> make_tuple_list([('a','b'), ('c','d')])
+    [('a', 'b'), ('c', 'd')]
+    >>> make_tuple_list([(1,2), (3,4), (5,6)])
+    [(1, 2), (3, 4), (5, 6)]
+    """
+    return list(map(lambda x: tuple(x), test_list))
+
+--
+
+
+3=========
+->Pred Code:
+def fact_of_num(n) :
+<sp4>""" Find the factorial of a given number.
+<sp3>>>> fact_of_num(5)
+<sp3>120
+<sp3>>>> fact_of_num(4)
+<sp3>24
+<sp3>"""
+<sp3>result = 1
+<sp3>for i in range(1, n+1):
+<sp7>result *= i
+<sp3>return result
+->Target Code:
+def fact_of_num(n) :
+    """ Find the factorial of a given number.
+    >>> fact_of_num(5)
+    120
+    >>> fact_of_num(4)
+    24
+    """
+    result = 1
+    for i in range(1,n+1):
+        result *= i
+    return result
+
+->Instruction:
+def fact_of_num(n) :
+    """ Find the factorial of a given number.
+    >>> fact_of_num(5)
+    120
+    >>> fact_of_num(4)
+    24
+    """
+
+->Reconstructed Predication:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def fact_of_num(n) :
+<sp4>""" Find the factorial of a given number.
+<sp3>>>> fact_of_num(5)
+<sp3>120
+<sp3>>>> fact_of_num(4)
+<sp3>24
+<sp3>"""
+<sp3>result = 1
+<sp3>for i in range(1, n+1):
+<sp7>result *= i
+<sp3>return result
+->Raw Input:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def fact_of_num(n) :
+    """ Find the factorial of a given number.
+    >>> fact_of_num(5)
+    120
+    >>> fact_of_num(4)
+    24
+    """
+    result = 1
+    for i in range(1,n+1):
+        result *= i
+    return result
+
+--
+
+
+4=========
+->Pred Code:
+def is_linear_increasing(arr,i,j):
+<sp4>""" Check whether a given array is linear increasing or not.
+<sp3>Examples:
+<sp3>>>> is_linear_increasing([2,3,4,5],1,3)
+<sp3>True
+<sp3>>>> is_linear_increasing([2,3,4,5],0,3)
+<sp3>True
+<sp3>>>> is_linear_increasing([2,3,4,5],2,3)
+<sp3>True
+<sp3>"""
+<sp3>if arr[i] <= arr[j]:
+<sp7>return True
+<sp3>else:
+<sp7>return False
+# Test cases
+print(is_linear_increasing([2,3,4,5],1,3)) # True
+print(is_linear_increasing([2,3,4,5],0,3)) # True
+print(is_linear_increasing([2,3,4,5],2,3)) # True
+print(is_linear_increasing([2,3,4,5],1,2)) # False
+print(is_linear_increasing([2,3,4,5],1,4)) # False
+print(is_linear_increasing([2,3,4,5],0,4)) # False
+print(is_linear_increasing([2,3,4,5],2,4)) # False
+print(is_linear_increasing([2,3,4,5],3,4)) # False
+print(is_linear_increasing([2,3,4,5],4,5)) # False
+print(
+->Target Code:
+def is_linear_increasing(arr,i,j):
+    """ Check whether a given array is linear increasing or not.
+    Examples:
+    >>> is_linear_increasing([2,3,4,5],1,3)
+    True
+    >>> is_linear_increasing([2,3,4,5],0,3)
+    True
+    >>> is_linear_increasing([2,3,4,5],2,3)
+    True
+    """
+    if (i == j):
+        return True
+    if (arr[i] <= arr[j]):
+        return True
+    return False
+
+->Instruction:
+def is_linear_increasing(arr,i,j):
+    """ Check whether a given array is linear increasing or not.
+    Examples:
+    >>> is_linear_increasing([2,3,4,5],1,3)
+    True
+    >>> is_linear_increasing([2,3,4,5],0,3)
+    True
+    >>> is_linear_increasing([2,3,4,5],2,3)
+    True
+    """
+
+->Reconstructed Predication:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def is_linear_increasing(arr,i,j):
+<sp4>""" Check whether a given array is linear increasing or not.
+<sp3>Examples:
+<sp3>>>> is_linear_increasing([2,3,4,5],1,3)
+<sp3>True
+<sp3>>>> is_linear_increasing([2,3,4,5],0,3)
+<sp3>True
+<sp3>>>> is_linear_increasing([2,3,4,5],2,3)
+<sp3>True
+<sp3>"""
+<sp3>if arr[i] <= arr[j]:
+<sp7>return True
+<sp3>else:
+<sp7>return False
+# Test cases
+print(is_linear_increasing([2,3,4,5],1,3)) # True
+print(is_linear_increasing([2,3,4,5],0,3)) # True
+print(is_linear_increasing([2,3,4,5],2,3)) # True
+print(is_linear_increasing([2,3,4,5],1,2)) # False
+print(is_linear_increasing([2,3,4,5],1,4)) # False
+print(is_linear_increasing([2,3,4,5],0,4)) # False
+print(is_linear_increasing([2,3,4,5],2,4)) # False
+print(is_linear_increasing([2,3,4,5],3,4)) # False
+print(is_linear_increasing([2,3,4,5],4,5)) # False
+print(
+->Raw Input:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def is_linear_increasing(arr,i,j):
+    """ Check whether a given array is linear increasing or not.
+    Examples:
+    >>> is_linear_increasing([2,3,4,5],1,3)
+    True
+    >>> is_linear_increasing([2,3,4,5],0,3)
+    True
+    >>> is_linear_increasing([2,3,4,5],2,3)
+    True
+    """
+    if (i == j):
+        return True
+    if (arr[i] <= arr[j]):
+        return True
+    return False
+
+--
+
+
+5=========
+->Pred Code:
+def longest_consecutive(list1):
+<sp4>""" Find the longest sequence of consecutive numbers in a given list.
+<sp3>Examples:
+<sp3>>>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+<sp3>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+<sp3>>>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 11])
+<sp3>[1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
+<sp3>>>> longest_consecutive([5,4,3,2,1])
+<sp3>[5, 4, 3, 2, 1]
+<sp3>"""
+<sp3># Implement your solution here
+<sp3>pass
+->Target Code:
+def longest_consecutive(list1):
+    """ Find the longest sequence of consecutive numbers in a given list.
+    Examples:
+    >>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    >>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 11])
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
+    >>> longest_consecutive([5,4,3,2,1])
+    [5, 4, 3, 2, 1]
+    """
+    longest=[]
+    consecutive=[]
+    for item in list1:
+        if item not in consecutive:
+            consecutive.append(item)
+            if (len(consecutive) == 1):
+                longest.append(consecutive[0])
+            else:
+                if (consecutive[-1] - consecutive[-2] + 1) > (len(consecutive)):
+                    longest.append(consecutive[-1])
+                else:
+                    longest=consecutive
+    return longest
+
+->Instruction:
+def longest_consecutive(list1):
+    """ Find the longest sequence of consecutive numbers in a given list.
+    Examples:
+    >>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    >>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 11])
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
+    >>> longest_consecutive([5,4,3,2,1])
+    [5, 4, 3, 2, 1]
+    """
+
+->Reconstructed Predication:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def longest_consecutive(list1):
+<sp4>""" Find the longest sequence of consecutive numbers in a given list.
+<sp3>Examples:
+<sp3>>>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+<sp3>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+<sp3>>>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 11])
+<sp3>[1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
+<sp3>>>> longest_consecutive([5,4,3,2,1])
+<sp3>[5, 4, 3, 2, 1]
+<sp3>"""
+<sp3># Implement your solution here
+<sp3>pass
+->Raw Input:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def longest_consecutive(list1):
+    """ Find the longest sequence of consecutive numbers in a given list.
+    Examples:
+    >>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    >>> longest_consecutive([1, 2, 3, 4, 5, 6, 7, 8, 9, 11])
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
+    >>> longest_consecutive([5,4,3,2,1])
+    [5, 4, 3, 2, 1]
+    """
+    longest=[]
+    consecutive=[]
+    for item in list1:
+        if item not in consecutive:
+            consecutive.append(item)
+            if (len(consecutive) == 1):
+                longest.append(consecutive[0])
+            else:
+                if (consecutive[-1] - consecutive[-2] + 1) > (len(consecutive)):
+                    longest.append(consecutive[-1])
+                else:
+                    longest=consecutive
+    return longest
+
+--
+
+
+6=========
+->Pred Code:
+def count_power(n) :
+<sp4>""" Count the number of distinct power of prime factor of given number.
+<sp3>>>> count_power(0)
+<sp3>0
+<sp3>>>> count_power(1)
+<sp3>0
+<sp3>>>> count_power(2)
+<sp3>1
+<sp3>"""
+<sp3>count = 0
+<sp3>for i in range(2, int(n ** 0.5) + 1):
+<sp7>if n % i == 0:
+<sp11>count += 1
+<sp3>return count
+->Target Code:
+def count_power(n) :
+    """ Count the number of distinct power of prime factor of given number.
+    >>> count_power(0)
+    0
+    >>> count_power(1)
+    0
+    >>> count_power(2)
+    1
+    """
+    count = 0
+    if n < 2:
+        return count
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            count += 1
+            while n % i == 0:
+                n = n // i
+    if n!= 1:
+        count += 1
+    return count
+
+->Instruction:
+def count_power(n) :
+    """ Count the number of distinct power of prime factor of given number.
+    >>> count_power(0)
+    0
+    >>> count_power(1)
+    0
+    >>> count_power(2)
+    1
+    """
+
+->Reconstructed Predication:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def count_power(n) :
+<sp4>""" Count the number of distinct power of prime factor of given number.
+<sp3>>>> count_power(0)
+<sp3>0
+<sp3>>>> count_power(1)
+<sp3>0
+<sp3>>>> count_power(2)
+<sp3>1
+<sp3>"""
+<sp3>count = 0
+<sp3>for i in range(2, int(n ** 0.5) + 1):
+<sp7>if n % i == 0:
+<sp11>count += 1
+<sp3>return count
+->Raw Input:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def count_power(n) :
+    """ Count the number of distinct power of prime factor of given number.
+    >>> count_power(0)
+    0
+    >>> count_power(1)
+    0
+    >>> count_power(2)
+    1
+    """
+    count = 0
+    if n < 2:
+        return count
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            count += 1
+            while n % i == 0:
+                n = n // i
+    if n!= 1:
+        count += 1
+    return count
+
+--
+
+
+7=========
+->Pred Code:
+def max_of_four(a, b, c, d):
+<sp4>""" Find the maximum of four numbers.
+<sp3>Examples:
+<sp3>>>> max_of_four(1,2,3,4)
+<sp3>4
+<sp3>>>> max_of_four(4,5,6,7)
+<sp3>7
+<sp3>>>> max_of_four(8,4,6,7)
+<sp3>8
+<sp3>"""
+<sp3>return max(a, b, c, d)
+->Target Code:
+def max_of_four(a, b, c, d):
+    """ Find the maximum of four numbers.
+    Examples:
+    >>> max_of_four(1,2,3,4)
+    4
+    >>> max_of_four(4,5,6,7)
+    7
+    >>> max_of_four(8,4,6,7)
+    8
+    """
+    return (max(a,max(b,max(c,d))))
+
+->Instruction:
+def max_of_four(a, b, c, d):
+    """ Find the maximum of four numbers.
+    Examples:
+    >>> max_of_four(1,2,3,4)
+    4
+    >>> max_of_four(4,5,6,7)
+    7
+    >>> max_of_four(8,4,6,7)
+    8
+    """
+
+->Reconstructed Predication:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def max_of_four(a, b, c, d):
+<sp4>""" Find the maximum of four numbers.
+<sp3>Examples:
+<sp3>>>> max_of_four(1,2,3,4)
+<sp3>4
+<sp3>>>> max_of_four(4,5,6,7)
+<sp3>7
+<sp3>>>> max_of_four(8,4,6,7)
+<sp3>8
+<sp3>"""
+<sp3>return max(a, b, c, d)
+->Raw Input:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def max_of_four(a, b, c, d):
+    """ Find the maximum of four numbers.
+    Examples:
+    >>> max_of_four(1,2,3,4)
+    4
+    >>> max_of_four(4,5,6,7)
+    7
+    >>> max_of_four(8,4,6,7)
+    8
+    """
+    return (max(a,max(b,max(c,d))))
+
+--
+
+
+8=========
+->Pred Code:
+def is_triangle_left(a,b,c):
+<sp4>""" Check if a triangle of positive area is possible with the given angles.
+<sp3>>>> is_triangle_left(60,30,40)
+<sp3>True
+<sp3>>>> is_triangle_left(50,50,60)
+<sp3>True
+<sp3>>>> is_triangle_left(90,90,90)
+<sp3>True
+<sp3>"""
+<sp3>return a+b>c and a+c>b and b+c>a
+def is_triangle_right(a,b,c):
+<sp4>""" Check if a triangle of positive area is possible with the given angles.
+<sp3>>>> is_triangle_right(60,30,40)
+<sp3>False
+<sp3>>>> is_triangle_right(50,50,60)
+<sp3>False
+<sp3>>>> is_triangle_right(90,90,90)
+<sp3>False
+<sp3>"""
+<sp3>return a+b>c and a+c>b and b+c>a
+def is_triangle_equilateral(a,b,c):
+<sp4>""" Check if a triangle is equilateral with the given angles.
+<sp3>>>> is_triangle_equilateral(60,60,60)
+<sp3>True
+<sp3>>>> is_triangle_equilateral(50,50,50)
+<sp3>True
+<sp3>>>> is_triangle_equilateral(90,90,90)
+<sp3>True
+<sp3>"""
+<sp3>return a==b==c
+->Target Code:
+def is_triangle_left(a,b,c):
+    """ Check if a triangle of positive area is possible with the given angles.
+    >>> is_triangle_left(60,30,40)
+    True
+    >>> is_triangle_left(50,50,60)
+    True
+    >>> is_triangle_left(90,90,90)
+    True
+    """
+    
+    return (a+b>c) and (b+c>a) and (a+c>b)
+
+->Instruction:
+def is_triangle_left(a,b,c):
+    """ Check if a triangle of positive area is possible with the given angles.
+    >>> is_triangle_left(60,30,40)
+    True
+    >>> is_triangle_left(50,50,60)
+    True
+    >>> is_triangle_left(90,90,90)
+    True
+    """
+
+->Reconstructed Predication:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def is_triangle_left(a,b,c):
+<sp4>""" Check if a triangle of positive area is possible with the given angles.
+<sp3>>>> is_triangle_left(60,30,40)
+<sp3>True
+<sp3>>>> is_triangle_left(50,50,60)
+<sp3>True
+<sp3>>>> is_triangle_left(90,90,90)
+<sp3>True
+<sp3>"""
+<sp3>return a+b>c and a+c>b and b+c>a
+def is_triangle_right(a,b,c):
+<sp4>""" Check if a triangle of positive area is possible with the given angles.
+<sp3>>>> is_triangle_right(60,30,40)
+<sp3>False
+<sp3>>>> is_triangle_right(50,50,60)
+<sp3>False
+<sp3>>>> is_triangle_right(90,90,90)
+<sp3>False
+<sp3>"""
+<sp3>return a+b>c and a+c>b and b+c>a
+def is_triangle_equilateral(a,b,c):
+<sp4>""" Check if a triangle is equilateral with the given angles.
+<sp3>>>> is_triangle_equilateral(60,60,60)
+<sp3>True
+<sp3>>>> is_triangle_equilateral(50,50,50)
+<sp3>True
+<sp3>>>> is_triangle_equilateral(90,90,90)
+<sp3>True
+<sp3>"""
+<sp3>return a==b==c
+
+->Raw Input:
+[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+Complete the following Python code without any tests or explanation: [/INST]
+ def is_triangle_left(a,b,c):
+    """ Check if a triangle of positive area is possible with the given angles.
+    >>> is_triangle_left(60,30,40)
+    True
+    >>> is_triangle_left(50,50,60)
+    True
+    >>> is_triangle_left(90,90,90)
+    True
+    """
+    
+    return (a+b>c) and (b+c>a) and (a+c>b)
+
+--
+

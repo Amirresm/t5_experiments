@@ -344,10 +344,8 @@ def ensure_path_exists(path):
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
 
-def create_llama_prompt(input_text):
-    # return f"[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nComplete the following Python code without any tests or explanation. Stop after one function is completed: [/INST]\n {input_text}"
-    return f"[INST] Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nComplete the following Python code without any tests or explanation: [/INST]\n {input_text}"
-    return f"[INST]Complete the Python function without any tests or explanation. Stop after one function is completed. Do not write anything after function is completed:[/INST]\n {input_text}"
+def create_llama_prompt(input_text, is_training=False, eos_token="</s>"):
+    return f"{input_text}{eos_token if is_training else ''}"
 
 
 def extract_code(raw):
@@ -538,12 +536,11 @@ def main():
         model.config.use_cache = False
 
     if is_decoder_only and not tokenizer.pad_token:
-        logger.info("Setting tokenizer pad token.")
-        # tokenizer.pad_token = tokenizer.eos_token  # https://github.com/huggingface/transformers/issues/22794
+        tokenizer.pad_token = tokenizer.bos_token  # https://github.com/huggingface/transformers/issues/22794
         tokenizer.padding_side = "left"
-        if '<pad>' not in tokenizer.get_vocab():
-            tokenizer.add_special_tokens({"pad_token": "<pad>"})
-        model.resize_token_embeddings(len(tokenizer))
+        # if '<pad>' not in tokenizer.get_vocab():
+        #     tokenizer.add_special_tokens({"pad_token": "<pad>"})
+        # model.resize_token_embeddings(len(tokenizer))
         model.config.pad_token_id = tokenizer.pad_token_id
         assert model.config.pad_token_id == tokenizer.pad_token_id, "The model's pad token ID does not match the tokenizer's pad token ID!"
 
@@ -623,6 +620,55 @@ def main():
 
     logger.info(f"Model memory footprint:\n{model.get_memory_footprint()}")
 
+    logger.info("tokenizer info:")
+    logger.info(f"bos: {tokenizer.bos_token}")
+    logger.info(f"eos: {tokenizer.eos_token}")
+    logger.info(f"unk: {tokenizer.unk_token}")
+    logger.info(f"pad: {tokenizer.pad_token}")
+    logger.info(f"cls: {tokenizer.cls_token}")
+    logger.info(f"msk: {tokenizer.mask_token}")
+
+    data_files = {}
+    extension = ""
+    if data_args.train_file is not None:
+        data_files["train"] = data_args.train_file
+        extension = data_args.train_file.split(".")[-1]
+    if data_args.validation_file is not None and not data_args.validation_file.startswith("SPLIT"):
+        data_files["validation"] = data_args.validation_file
+        extension = data_args.validation_file.split(".")[-1]
+    if data_args.test_file is not None and not data_args.test_file.startswith("SPLIT"):
+        data_files["test"] = data_args.test_file
+        extension = data_args.test_file.split(".")[-1]
+    if extension == "jsonl":
+        extension = "json"
+    raw_datasets = load_dataset(
+        extension,
+        data_files=data_files,
+        cache_dir=model_args.cache_dir,
+        token=True if model_args.use_auth_token else None,
+    )
+
+    if "train" in raw_datasets and data_args.validation_file.startswith("SPLIT"):
+        split = float(data_args.validation_file.split("SPLIT")[-1])
+        if split > 0:
+            raw_datasets["validation"] = raw_datasets["train"].train_test_split(
+                test_size=split, seed=training_args.seed
+            )["test"]
+            raw_datasets["train"] = raw_datasets["train"].train_test_split(
+                test_size=split, seed=training_args.seed
+            )["train"]
+
+    if "train" in raw_datasets and data_args.test_file.startswith("SPLIT"):
+        split = float(data_args.test_file.split("SPLIT")[-1])
+        if split > 0:
+            raw_datasets["test"] = raw_datasets["train"].train_test_split(
+                test_size=split, seed=training_args.seed
+            )["test"]
+            raw_datasets["train"] = raw_datasets["train"].train_test_split(
+                test_size=split, seed=training_args.seed
+            )["train"]
+
+
     args = {}
     while True:
         logger.info("\n\n===> Enter a prompt or 'exit' to quit")
@@ -640,6 +686,24 @@ def main():
 
             logger.info(f"Command line arguments set: {args}")
             continue
+
+        if user_prompt.startswith("reset: "):
+            args = {}
+            logger.info(f"Command line arguments set: {args}")
+            continue
+
+        if user_prompt.startswith("ds: "):
+            index = user_prompt.split("ds: ")[1]
+            try:
+                split = index.split(" ")[0].strip()
+                index = index.split(" ")[1].strip()
+                index = int(index)
+                user_prompt = create_llama_prompt(raw_datasets[split]["code"][index])
+
+                logger.info(f"Ds split '{split}', index: {index}, content:\n{user_prompt}")
+            except Exception as e:
+                logger.info(f"Inproper ds index, error:\n{e}")
+
 
         try:
             generate_batch_completion(model, tokenizer, user_prompt, 1, **args)
